@@ -1,8 +1,6 @@
 import type React from "react";
 import type { Metadata } from "next";
 import { PublicHeader } from "@/features/public-register/search/components/public-header";
-import PageContainer from "@/components/layout/page-container";
-import { Footer } from "@/features/public-register/search/components/footer";
 
 export const metadata: Metadata = {
   title: "Public Register - Business Registry",

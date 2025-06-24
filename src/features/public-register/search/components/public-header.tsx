@@ -11,7 +11,6 @@ import { ChevronDown, Globe, Moon, Sun } from "lucide-react";
 import { useThemeConfig } from "@/components/active-theme";
 import Image from "next/image";
 import { useState } from "react";
-import { ThemeSelector } from "../../theme-selector";
 
 // Mode Toggle Component
 function ModeToggle() {
