@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Globe, Moon, Sun } from "lucide-react";
+import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useThemeConfig } from "@/components/active-theme";
 import Image from "next/image";
 import { useState } from "react";
