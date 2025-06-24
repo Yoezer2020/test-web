@@ -10,7 +10,6 @@ import {
 import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useThemeConfig } from "@/components/active-theme";
 import Image from "next/image";
-import { useState } from "react";
 
 // Mode Toggle Component
 function ModeToggle() {
@@ -30,11 +29,6 @@ function ModeToggle() {
 
 export function PublicHeader() {
   const { isDarkMode } = useThemeConfig();
-  const [logoError, setLogoError] = useState({ light: false, dark: false });
-
-  const handleLogoError = (mode: "light" | "dark") => {
-    setLogoError((prev) => ({ ...prev, [mode]: true }));
-  };
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b-2 border-gray-200 dark:border-white/20">
@@ -54,7 +48,6 @@ export function PublicHeader() {
                   className={`object-contain drop-shadow-lg transition-all duration-300 group-hover:scale-110 ${
                     !isDarkMode ? "relative opacity-100" : "absolute opacity-0"
                   }`}
-                  onError={() => handleLogoError("light")}
                   priority
                 />
               </>
