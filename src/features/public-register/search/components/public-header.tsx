@@ -28,8 +28,6 @@ function ModeToggle() {
 }
 
 export function PublicHeader() {
-  const { isDarkMode } = useThemeConfig();
-
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b-2 border-gray-200 dark:border-white/20">
       <div className="container mx-auto px-4">
@@ -45,8 +43,7 @@ export function PublicHeader() {
                   alt="GCRO Logo"
                   width={60}
                   height={60}
-                  className={`object-contain drop-shadow-lg transition-all duration-300 group-hover:scale-110 ${
-                    !isDarkMode ? "relative opacity-100" : "absolute opacity-0"
+                  className={`object-contain drop-shadow-lg transition-all duration-300 group-hover:scale-110 "relative opacity-100" : "absolute opacity-0"
                   }`}
                   priority
                 />
