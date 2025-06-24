@@ -44,47 +44,20 @@ export function PublicHeader() {
           <div className="flex items-center group">
             <div className="relative">
               {/* Show fallback if both logos fail */}
-              {logoError.light && logoError.dark ? (
-                <div className="flex items-center justify-center w-[60px] h-[60px]">
-                  <div className="text-2xl">🏢</div>
-                </div>
-              ) : (
-                <>
-                  {/* Light Mode Logo */}
-                  {!logoError.light && (
-                    <Image
-                      src="/images/logo-dark.svg" // Your light mode logo
-                      alt="GCRO Logo"
-                      width={60}
-                      height={60}
-                      className={`object-contain drop-shadow-lg transition-all duration-300 group-hover:scale-110 ${
-                        !isDarkMode
-                          ? "relative opacity-100"
-                          : "absolute opacity-0"
-                      }`}
-                      onError={() => handleLogoError("light")}
-                      priority
-                    />
-                  )}
 
-                  {/* Dark Mode Logo */}
-                  {!logoError.dark && (
-                    <Image
-                      src="/images/logo-light.svg" // Your dark mode logo
-                      alt="GCRO Logo"
-                      width={60}
-                      height={60}
-                      className={`object-contain drop-shadow-lg transition-all duration-300 group-hover:scale-110 ${
-                        isDarkMode
-                          ? "relative opacity-100"
-                          : "absolute opacity-0"
-                      }`}
-                      onError={() => handleLogoError("dark")}
-                      priority
-                    />
-                  )}
-                </>
-              )}
+              <>
+                <Image
+                  src="/images/gmc_color_logo.svg" // Your light mode logo
+                  alt="GCRO Logo"
+                  width={60}
+                  height={60}
+                  className={`object-contain drop-shadow-lg transition-all duration-300 group-hover:scale-110 ${
+                    !isDarkMode ? "relative opacity-100" : "absolute opacity-0"
+                  }`}
+                  onError={() => handleLogoError("light")}
+                  priority
+                />
+              </>
             </div>
           </div>
 
