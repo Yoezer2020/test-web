@@ -188,16 +188,6 @@ export function PublicHeader() {
             {/* Dark Mode Toggle */}
             <ModeToggle />
 
-            {/* Language Selector */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-105 transition-all duration-200"
-            >
-              <Globe className="h-4 w-4" />
-              EN
-            </Button>
-
             <Button
               variant="ghost"
               size="sm"

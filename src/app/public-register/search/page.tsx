@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { BackgroundImageSection } from "@/features/public-register/search/components/background-image-section";
 import { EnablingBusiness } from "@/features/public-register/search/components/enabling-business";
 import { HeroSection } from "@/features/public-register/search/components/hero-section";
 import { InformationGuides } from "@/features/public-register/search/components/information-guides";
@@ -42,7 +41,6 @@ export default function PublicRegisterPage() {
         <HeroSection />
         <SearchSection />
         <PopularSection />
-        <BackgroundImageSection />
         <InformationGuides />
         <EnablingBusiness />
         <Footer />
