@@ -4,6 +4,8 @@ import { SectionContainer } from "@/components/layout/section-container";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useThemeConfig } from "@/components/active-theme";
+import { Button } from "@/components/ui/button";
+import NextLink from "next/link";
 
 export function HeroSection() {
   const { isDarkMode } = useThemeConfig();
@@ -98,9 +100,21 @@ export function HeroSection() {
             filing and information
           </p>
         </div>
+        {/* Call to Action Button */}
 
         <div className="relative mx-auto max-w-lg lg:max-w-none">
           <LogoComponent />
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4 pt-6">
+          <Button
+            asChild
+            size="lg"
+            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+          >
+            <NextLink href="/public-register/start-business">
+              Start a Business
+            </NextLink>
+          </Button>
         </div>
       </div>
     </SectionContainer>
