@@ -2,42 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { SectionContainer } from "@/components/layout/section-container";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Building2, FileText, Users, Globe } from "lucide-react";
 import { ExpressionOfInterestForm } from "@/features/public-register/start-business/components/expression-of-interest-form";
-
-const steps = [
-  {
-    icon: FileText,
-    title: "Expression of Interest",
-    description: "Submit your initial business proposal",
-    status: "current" as const,
-  },
-  {
-    icon: Users,
-    title: "Review Process",
-    description: "Our team reviews your application",
-    status: "upcoming" as const,
-  },
-  {
-    icon: Building2,
-    title: "Registration",
-    description: "Complete your business registration",
-    status: "upcoming" as const,
-  },
-  {
-    icon: Globe,
-    title: "Go Live",
-    description: "Start operating your business",
-    status: "upcoming" as const,
-  },
-];
 
 export default function StartBusinessPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -81,48 +46,6 @@ export default function StartBusinessPage() {
                 entity in Bhutan
               </p>
             </div>
-
-            {/* Progress Steps */}
-            <Card className="border-2 border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-xl">
-              <CardHeader>
-                <CardTitle className="text-xl text-gray-900 dark:text-white">
-                  Registration Process
-                </CardTitle>
-                <CardDescription className="text-gray-600 dark:text-gray-300">
-                  Follow these steps to complete your business registration
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {steps.map((step, index) => (
-                    <div
-                      key={index}
-                      className={`flex flex-col items-center text-center p-4 rounded-lg border-2 transition-all duration-200 ${
-                        step.status === "current"
-                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30 shadow-lg"
-                          : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 bg-white/50 dark:bg-gray-800/50"
-                      }`}
-                    >
-                      <div
-                        className={`p-3 rounded-full mb-3 transition-all duration-200 ${
-                          step.status === "current"
-                            ? "bg-blue-500 text-white shadow-lg"
-                            : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
-                        }`}
-                      >
-                        <step.icon className="h-6 w-6" />
-                      </div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                        {step.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {step.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
 
             {/* Form */}
             <ExpressionOfInterestForm />

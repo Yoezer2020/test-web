@@ -10,6 +10,7 @@ import {
 import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useThemeConfig } from "@/components/active-theme";
 import Image from "next/image";
+import NextLink from "next/link";
 
 // Mode Toggle Component
 function ModeToggle() {
@@ -49,6 +50,17 @@ export function PublicHeader() {
                 />
               </>
             </div>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              asChild
+              size="lg"
+              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+            >
+              <NextLink href="/public-register/start-business">
+                Start a Business
+              </NextLink>
+            </Button>
           </div>
 
           {/* Navigation */}

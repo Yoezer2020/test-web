@@ -33,6 +33,8 @@ import {
   Globe,
   User,
   Users,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -42,6 +44,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 interface FormData {
   email: string;
@@ -104,11 +111,16 @@ export function ExpressionOfInterestForm() {
     socialMediaLinks: "",
   });
 
-  const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [expandedSections, setExpandedSections] = useState({
+    basic: true,
+    business: true,
+    applicant: true,
+    online: false,
+  });
 
   const handleActivityToggle = (activity: string) => {
     setFormData((prev) => ({
@@ -119,73 +131,47 @@ export function ExpressionOfInterestForm() {
     }));
   };
 
-  const validateStep = (step: number): boolean => {
+  const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (step === 1) {
-      if (!formData.email) newErrors.email = "Email is required";
-      if (!formData.entityType)
-        newErrors.entityType = "Entity type is required";
-    }
+    // Basic Information
+    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.entityType) newErrors.entityType = "Entity type is required";
 
-    if (step === 2) {
-      if (!formData.businessPlan || formData.businessPlan.length < 100)
-        newErrors.businessPlan =
-          "Business plan must be at least 100 characters";
-      if (formData.expectedActivities.length === 0)
-        newErrors.expectedActivities = "Please select at least one activity";
-    }
+    // Business Plan & Activities
+    if (!formData.businessPlan || formData.businessPlan.length < 100)
+      newErrors.businessPlan = "Business plan must be at least 100 characters";
+    if (formData.expectedActivities.length === 0)
+      newErrors.expectedActivities = "Please select at least one activity";
 
-    if (step === 3) {
-      if (!formData.applicantType)
-        newErrors.applicantType = "Applicant type is required";
-      if (
-        !formData.applicantDescription ||
-        formData.applicantDescription.length < 50
-      )
-        newErrors.applicantDescription =
-          "Please provide a detailed description (at least 50 characters)";
-      if (!formData.countryOfOrigin)
-        newErrors.countryOfOrigin = "Country of origin is required";
-    }
+    // Applicant Information
+    if (!formData.applicantType)
+      newErrors.applicantType = "Applicant type is required";
+    if (
+      !formData.applicantDescription ||
+      formData.applicantDescription.length < 50
+    )
+      newErrors.applicantDescription =
+        "Please provide a detailed description (at least 50 characters)";
+    if (!formData.countryOfOrigin)
+      newErrors.countryOfOrigin = "Country of origin is required";
 
-    if (step === 4) {
-      if (formData.hasWebsite && !formData.websiteUrl)
-        newErrors.websiteUrl =
-          "Website URL is required when 'We have a website' is checked";
-      if (formData.hasSocialMedia && !formData.socialMediaLinks)
-        newErrors.socialMediaLinks =
-          "Social media links are required when 'We have social media presence' is checked";
-    }
+    // Online Presence (conditional)
+    if (formData.hasWebsite && !formData.websiteUrl)
+      newErrors.websiteUrl =
+        "Website URL is required when 'We have a website' is checked";
+    if (formData.hasSocialMedia && !formData.socialMediaLinks)
+      newErrors.socialMediaLinks =
+        "Social media links are required when 'We have social media presence' is checked";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNextStep = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep((prev) => Math.min(5, prev + 1));
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (currentStep < 4) {
-      handleNextStep();
-    } else {
-      // Validate all steps before showing confirmation
-      const allStepsValid = [1, 2, 3, 4].every((step) => {
-        const isValid = validateStep(step);
-        if (!isValid && currentStep !== step) {
-          setCurrentStep(step); // Jump to the step with errors
-        }
-        return isValid;
-      });
-
-      if (allStepsValid) {
-        setShowConfirmation(true);
-      }
+    if (validateForm()) {
+      setShowConfirmation(true);
     }
   };
 
@@ -193,7 +179,6 @@ export function ExpressionOfInterestForm() {
     setShowConfirmation(false);
     setIsSubmitting(true);
 
-    // Simulate API call
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setSubmitSuccess(true);
@@ -202,6 +187,34 @@ export function ExpressionOfInterestForm() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  const getCompletionStatus = () => {
+    const requiredFields = [
+      formData.email,
+      formData.entityType,
+      formData.businessPlan.length >= 100,
+      formData.expectedActivities.length > 0,
+      formData.applicantType,
+      formData.applicantDescription.length >= 50,
+      formData.countryOfOrigin,
+    ];
+
+    const completed = requiredFields.filter(Boolean).length;
+    const total = requiredFields.length;
+
+    return {
+      completed,
+      total,
+      percentage: Math.round((completed / total) * 100),
+    };
   };
 
   if (submitSuccess) {
@@ -227,6 +240,8 @@ export function ExpressionOfInterestForm() {
     );
   }
 
+  const completionStatus = getCompletionStatus();
+
   return (
     <>
       <Card className="border-2 border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-xl">
@@ -236,31 +251,62 @@ export function ExpressionOfInterestForm() {
             Expression of Interest Form
           </CardTitle>
           <CardDescription className="text-gray-600 dark:text-gray-300">
-            Step {currentStep} of 4 - Please provide accurate information for
-            your business registration
+            Please provide accurate information for your business registration
           </CardDescription>
 
-          {/* Progress Bar */}
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div
-              className="bg-blue-500 dark:bg-blue-400 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(currentStep / 4) * 100}%` }}
-            />
+          {/* Progress Indicator */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600 dark:text-gray-400">
+                Form Completion
+              </span>
+              <span className="font-medium text-gray-900 dark:text-white">
+                {completionStatus.completed}/{completionStatus.total} sections
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div
+                className="bg-blue-500 dark:bg-blue-400 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${completionStatus.percentage}%` }}
+              />
+            </div>
           </div>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Step 1: Basic Information */}
-            {currentStep === 1 && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-2 mb-4">
+            {/* Basic Information Section */}
+            <Collapsible
+              open={expandedSections.basic}
+              onOpenChange={() => toggleSection("basic")}
+            >
+              <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <div className="flex items-center gap-2">
                   <Mail className="h-5 w-5 text-blue-500 dark:text-blue-400" />
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Basic Information
                   </h3>
+                  <Badge
+                    variant={
+                      formData.email && formData.entityType
+                        ? "default"
+                        : "secondary"
+                    }
+                    className="ml-2"
+                  >
+                    {formData.email && formData.entityType
+                      ? "Complete"
+                      : "Required"}
+                  </Badge>
                 </div>
+                {expandedSections.basic ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </CollapsibleTrigger>
 
+              <CollapsibleContent className="space-y-6 pt-6">
                 <div className="space-y-2">
                   <Label
                     htmlFor="email"
@@ -335,19 +381,45 @@ export function ExpressionOfInterestForm() {
                       "A branch office of a foreign company"}
                   </p>
                 </div>
-              </div>
-            )}
+              </CollapsibleContent>
+            </Collapsible>
 
-            {/* Step 2: Business Plan & Activities */}
-            {currentStep === 2 && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-2 mb-4">
+            <Separator className="bg-gray-200 dark:bg-gray-700" />
+
+            {/* Business Plan & Activities Section */}
+            <Collapsible
+              open={expandedSections.business}
+              onOpenChange={() => toggleSection("business")}
+            >
+              <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <div className="flex items-center gap-2">
                   <Building2 className="h-5 w-5 text-blue-500 dark:text-blue-400" />
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Business Plan & Activities
                   </h3>
+                  <Badge
+                    variant={
+                      formData.businessPlan.length >= 100 &&
+                      formData.expectedActivities.length > 0
+                        ? "default"
+                        : "secondary"
+                    }
+                    className="ml-2"
+                  >
+                    {formData.businessPlan.length >= 100 &&
+                    formData.expectedActivities.length > 0
+                      ? "Complete"
+                      : "Required"}
+                  </Badge>
                 </div>
+                {expandedSections.business ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </CollapsibleTrigger>
 
+              <CollapsibleContent className="space-y-6 pt-6">
                 <div className="space-y-2">
                   <Label
                     htmlFor="businessPlan"
@@ -428,21 +500,49 @@ export function ExpressionOfInterestForm() {
                     </div>
                   )}
                 </div>
-              </div>
-            )}
+              </CollapsibleContent>
+            </Collapsible>
 
-            {/* Step 3: Applicant Information */}
-            {currentStep === 3 && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-2 mb-4">
+            <Separator className="bg-gray-200 dark:bg-gray-700" />
+
+            {/* Applicant Information Section */}
+            <Collapsible
+              open={expandedSections.applicant}
+              onOpenChange={() => toggleSection("applicant")}
+            >
+              <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <div className="flex items-center gap-2">
                   <Users className="h-5 w-5 text-blue-500 dark:text-blue-400" />
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Applicant Information
                   </h3>
+                  <Badge
+                    variant={
+                      formData.applicantType &&
+                      formData.applicantDescription.length >= 50 &&
+                      formData.countryOfOrigin
+                        ? "default"
+                        : "secondary"
+                    }
+                    className="ml-2"
+                  >
+                    {formData.applicantType &&
+                    formData.applicantDescription.length >= 50 &&
+                    formData.countryOfOrigin
+                      ? "Complete"
+                      : "Required"}
+                  </Badge>
                 </div>
+                {expandedSections.applicant ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </CollapsibleTrigger>
 
+              <CollapsibleContent className="space-y-6 pt-6">
                 <div className="space-y-4">
-                  <Label className="text-gray-900 dark:text-gray-100 ">
+                  <Label className="text-gray-900 dark:text-gray-100">
                     Applicant Type *
                   </Label>
                   <RadioGroup
@@ -452,7 +552,7 @@ export function ExpressionOfInterestForm() {
                     }
                     className="space-y-2"
                   >
-                    <div className="flex items-center space-x-2 space-y-2">
+                    <div className="flex items-center space-x-2 pt-5">
                       <RadioGroupItem
                         value="individual"
                         id="individual"
@@ -481,7 +581,6 @@ export function ExpressionOfInterestForm() {
                       </Label>
                     </div>
                   </RadioGroup>
-
                   {errors.applicantType && (
                     <p className="text-sm text-red-500 dark:text-red-400">
                       {errors.applicantType}
@@ -563,19 +662,34 @@ export function ExpressionOfInterestForm() {
                     </p>
                   )}
                 </div>
-              </div>
-            )}
+              </CollapsibleContent>
+            </Collapsible>
 
-            {/* Step 4: Online Presence (Optional) */}
-            {currentStep === 4 && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-2 mb-4">
+            <Separator className="bg-gray-200 dark:bg-gray-700" />
+
+            {/* Online Presence Section */}
+            <Collapsible
+              open={expandedSections.online}
+              onOpenChange={() => toggleSection("online")}
+            >
+              <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <div className="flex items-center gap-2">
                   <Globe className="h-5 w-5 text-blue-500 dark:text-blue-400" />
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Online Presence (Optional)
+                    Online Presence
                   </h3>
+                  <Badge variant="outline" className="ml-2">
+                    Optional
+                  </Badge>
                 </div>
+                {expandedSections.online ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </CollapsibleTrigger>
 
+              <CollapsibleContent className="space-y-6 pt-6">
                 <Alert className="border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20">
                   <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   <AlertDescription className="text-blue-800 dark:text-blue-200">
@@ -705,52 +819,41 @@ export function ExpressionOfInterestForm() {
                     />
                   </div>
                 </div>
-              </div>
-            )}
+              </CollapsibleContent>
+            </Collapsible>
 
             <Separator className="bg-gray-200 dark:bg-gray-700" />
 
-            {/* Navigation Buttons */}
-            <div className="flex justify-between">
-              {/* Previous Button (unchanged) */}
+            {/* Submit Button */}
+            <div className="flex justify-center pt-6">
               <Button
-                type="button"
-                variant="outline"
-                onClick={() => setCurrentStep((prev) => Math.max(1, prev - 1))}
-                disabled={currentStep === 1}
-                className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800"
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 px-8 py-3 text-sm"
               >
-                Previous
-              </Button>
-
-              {/* Next/Submit Buttons - Modified */}
-              <div className="flex gap-2">
-                {currentStep < 4 ? (
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      if (validateStep(currentStep)) {
-                        setCurrentStep((prev) => prev + 1);
-                      }
-                    }}
-                    className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-                  >
-                    Next Step
-                  </Button>
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Submitting...
+                  </span>
                 ) : (
-                  <Button
-                    type="button" // Changed from type="submit" to type="button"
-                    onClick={() => {
-                      if (validateStep(4)) {
-                        setShowConfirmation(true);
-                      }
-                    }}
-                    className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600"
-                  >
-                    Submit
-                  </Button>
+                  "Submit"
                 )}
-              </div>
+              </Button>
             </div>
           </form>
         </CardContent>
@@ -769,9 +872,9 @@ export function ExpressionOfInterestForm() {
           <div className="space-y-4 py-4">
             <div className="flex items-start gap-4">
               <div className="space-y-2">
-                <h4 className="font-medium text-gray-500 dark:text-gray-100">
+                <h6 className="font-medium text-gray-500 dark:text-gray-100">
                   Are you sure you want to submit your Expression of Interest?
-                </h4>
+                </h6>
               </div>
             </div>
           </div>
