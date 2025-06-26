@@ -336,17 +336,10 @@ export function PublicHeader() {
             {/* Desktop Auth Buttons - Hidden on mobile */}
             <div className="hidden lg:flex items-center space-x-2">
               <Button
-                variant="ghost"
-                size="sm"
-                className="transition-all duration-200 hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                Login
-              </Button>
-              <Button
                 size="sm"
                 className="bg-gray-900 text-white transition-all duration-200 hover:scale-105 hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
               >
-                Sign up free →
+                Login →
               </Button>
             </div>
 
