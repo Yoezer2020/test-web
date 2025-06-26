@@ -26,7 +26,6 @@ export default function StartBusinessPage() {
             backgroundRepeat: "no-repeat",
             backgroundAttachment: "scroll",
             backgroundColor: "#fff",
-            filter: "blur(2px)",
           }}
         />
       )}
