@@ -21,7 +21,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -33,8 +32,6 @@ import {
   Globe,
   User,
   Users,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -44,42 +41,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 
 interface FormData {
   email: string;
   entityType: string;
   businessPlan: string;
-  expectedActivities: string[];
   applicantType: string;
   applicantDescription: string;
   countryOfOrigin: string;
   onlinePresence: string;
-  hasWebsite: boolean;
-  websiteUrl: string;
-  hasSocialMedia: boolean;
-  socialMediaLinks: string;
 }
-
-const businessActivities = [
-  "Financial Services",
-  "Technology & Software",
-  "Manufacturing",
-  "Trading & Import/Export",
-  "Tourism & Hospitality",
-  "Agriculture & Food Processing",
-  "Healthcare Services",
-  "Education & Training",
-  "Construction & Real Estate",
-  "Transportation & Logistics",
-  "Consulting Services",
-  "Retail & E-commerce",
-  "Other",
-];
 
 const countries = [
   "Bhutan",
@@ -100,36 +71,16 @@ export function ExpressionOfInterestForm() {
     email: "",
     entityType: "",
     businessPlan: "",
-    expectedActivities: [],
     applicantType: "",
     applicantDescription: "",
     countryOfOrigin: "",
     onlinePresence: "",
-    hasWebsite: false,
-    websiteUrl: "",
-    hasSocialMedia: false,
-    socialMediaLinks: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [expandedSections, setExpandedSections] = useState({
-    basic: true,
-    business: true,
-    applicant: true,
-    online: false,
-  });
-
-  const handleActivityToggle = (activity: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      expectedActivities: prev.expectedActivities.includes(activity)
-        ? prev.expectedActivities.filter((a) => a !== activity)
-        : [...prev.expectedActivities, activity],
-    }));
-  };
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -139,30 +90,16 @@ export function ExpressionOfInterestForm() {
     if (!formData.entityType) newErrors.entityType = "Entity type is required";
 
     // Business Plan & Activities
-    if (!formData.businessPlan || formData.businessPlan.length < 100)
-      newErrors.businessPlan = "Business plan must be at least 100 characters";
-    if (formData.expectedActivities.length === 0)
-      newErrors.expectedActivities = "Please select at least one activity";
+    if (!formData.businessPlan)
+      newErrors.businessPlan = "Business plan is required";
 
     // Applicant Information
     if (!formData.applicantType)
       newErrors.applicantType = "Applicant type is required";
-    if (
-      !formData.applicantDescription ||
-      formData.applicantDescription.length < 50
-    )
-      newErrors.applicantDescription =
-        "Please provide a detailed description (at least 50 characters)";
+    if (!formData.applicantDescription)
+      newErrors.applicantDescription = "Detailed description is required";
     if (!formData.countryOfOrigin)
       newErrors.countryOfOrigin = "Country of origin is required";
-
-    // Online Presence (conditional)
-    if (formData.hasWebsite && !formData.websiteUrl)
-      newErrors.websiteUrl =
-        "Website URL is required when 'We have a website' is checked";
-    if (formData.hasSocialMedia && !formData.socialMediaLinks)
-      newErrors.socialMediaLinks =
-        "Social media links are required when 'We have social media presence' is checked";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -180,30 +117,28 @@ export function ExpressionOfInterestForm() {
     setIsSubmitting(true);
 
     try {
+      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Here you would normally send the data to your API
+      console.log("Form data being submitted:", formData);
+
       setSubmitSuccess(true);
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Submission error:", error);
+      // You could add error handling here
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [section]: !prev[section],
-    }));
   };
 
   const getCompletionStatus = () => {
     const requiredFields = [
       formData.email,
       formData.entityType,
-      formData.businessPlan.length >= 100,
-      formData.expectedActivities.length > 0,
+      formData.businessPlan,
       formData.applicantType,
-      formData.applicantDescription.length >= 50,
+      formData.applicantDescription,
       formData.countryOfOrigin,
     ];
 
@@ -226,8 +161,8 @@ export function ExpressionOfInterestForm() {
             Expression of Interest Submitted!
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Thank you for your submission. We will review your application and
-            contact you within 3-5 business days.
+            Thank you, GCRO will review your expression of interest and you will
+            be notified about the outcome
           </p>
           <div className="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg border border-green-200 dark:border-green-700">
             <p className="text-sm text-green-800 dark:text-green-200">
@@ -235,6 +170,25 @@ export function ExpressionOfInterestForm() {
               with your application reference number and further instructions.
             </p>
           </div>
+          <Button
+            onClick={() => {
+              setSubmitSuccess(false);
+              setFormData({
+                email: "",
+                entityType: "",
+                businessPlan: "",
+                applicantType: "",
+                applicantDescription: "",
+                countryOfOrigin: "",
+                onlinePresence: "",
+              });
+              setErrors({});
+            }}
+            variant="outline"
+            className="mt-6"
+          >
+            Submit Another Application
+          </Button>
         </CardContent>
       </Card>
     );
@@ -250,7 +204,7 @@ export function ExpressionOfInterestForm() {
             <FileText className="h-5 w-5 text-blue-500 dark:text-blue-400" />
             Expression of Interest Form
           </CardTitle>
-          <CardDescription className="text-gray-600 dark:text-gray-300">
+          <CardDescription className="text-gray-600 dark:text-gray-300 pt-4">
             Please provide accurate information for your business registration
           </CardDescription>
 
@@ -274,39 +228,29 @@ export function ExpressionOfInterestForm() {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information Section */}
-            <Collapsible
-              open={expandedSections.basic}
-              onOpenChange={() => toggleSection("basic")}
-            >
-              <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <div className="flex items-center gap-2">
-                  <Mail className="h-5 w-5 text-blue-500 dark:text-blue-400" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Basic Information
-                  </h3>
-                  <Badge
-                    variant={
-                      formData.email && formData.entityType
-                        ? "default"
-                        : "secondary"
-                    }
-                    className="ml-2"
-                  >
-                    {formData.email && formData.entityType
-                      ? "Complete"
-                      : "Required"}
-                  </Badge>
-                </div>
-                {expandedSections.basic ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </CollapsibleTrigger>
+            <div className="space-y-6 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Mail className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Basic Information
+                </h3>
+                <Badge
+                  variant={
+                    formData.email && formData.entityType
+                      ? "default"
+                      : "secondary"
+                  }
+                  className="ml-2"
+                >
+                  {formData.email && formData.entityType
+                    ? "Complete"
+                    : "Required"}
+                </Badge>
+              </div>
 
-              <CollapsibleContent className="space-y-6 pt-6">
+              <div className="space-y-4">
                 <div className="space-y-2">
                   <Label
                     htmlFor="email"
@@ -381,45 +325,21 @@ export function ExpressionOfInterestForm() {
                       "A branch office of a foreign company"}
                   </p>
                 </div>
-              </CollapsibleContent>
-            </Collapsible>
+              </div>
+            </div>
 
             <Separator className="bg-gray-200 dark:bg-gray-700" />
 
             {/* Business Plan & Activities Section */}
-            <Collapsible
-              open={expandedSections.business}
-              onOpenChange={() => toggleSection("business")}
-            >
-              <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5 text-blue-500 dark:text-blue-400" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Business Plan & Activities
-                  </h3>
-                  <Badge
-                    variant={
-                      formData.businessPlan.length >= 100 &&
-                      formData.expectedActivities.length > 0
-                        ? "default"
-                        : "secondary"
-                    }
-                    className="ml-2"
-                  >
-                    {formData.businessPlan.length >= 100 &&
-                    formData.expectedActivities.length > 0
-                      ? "Complete"
-                      : "Required"}
-                  </Badge>
-                </div>
-                {expandedSections.business ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </CollapsibleTrigger>
+            <div className="space-y-6 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Building2 className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Business Plan & Activities
+                </h3>
+              </div>
 
-              <CollapsibleContent className="space-y-6 pt-6">
+              <div className="space-y-4">
                 <div className="space-y-2">
                   <Label
                     htmlFor="businessPlan"
@@ -445,102 +365,38 @@ export function ExpressionOfInterestForm() {
                       {errors.businessPlan}
                     </p>
                   )}
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {formData.businessPlan.length}/100 characters minimum
-                  </p>
                 </div>
-
-                <div className="space-y-3">
-                  <Label className="text-gray-900 dark:text-gray-100">
-                    Expected Business Activities *
-                  </Label>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Select all activities your business will engage in
-                  </p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {businessActivities.map((activity) => (
-                      <div
-                        key={activity}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={activity}
-                          checked={formData.expectedActivities.includes(
-                            activity
-                          )}
-                          onCheckedChange={() => handleActivityToggle(activity)}
-                          className="border-gray-300 dark:border-gray-600"
-                        />
-                        <Label
-                          htmlFor={activity}
-                          className="text-sm cursor-pointer text-gray-900 dark:text-gray-100"
-                        >
-                          {activity}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                  {errors.expectedActivities && (
-                    <p className="text-sm text-red-500 dark:text-red-400">
-                      {errors.expectedActivities}
-                    </p>
-                  )}
-                  {formData.expectedActivities.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      {formData.expectedActivities.map((activity) => (
-                        <Badge
-                          key={activity}
-                          variant="secondary"
-                          className="cursor-pointer bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-900/50"
-                          onClick={() => handleActivityToggle(activity)}
-                        >
-                          {activity} ×
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
+              </div>
+            </div>
 
             <Separator className="bg-gray-200 dark:bg-gray-700" />
 
             {/* Applicant Information Section */}
-            <Collapsible
-              open={expandedSections.applicant}
-              onOpenChange={() => toggleSection("applicant")}
-            >
-              <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-blue-500 dark:text-blue-400" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Applicant Information
-                  </h3>
-                  <Badge
-                    variant={
-                      formData.applicantType &&
-                      formData.applicantDescription.length >= 50 &&
-                      formData.countryOfOrigin
-                        ? "default"
-                        : "secondary"
-                    }
-                    className="ml-2"
-                  >
-                    {formData.applicantType &&
+            <div className="space-y-6 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Applicant Information
+                </h3>
+                <Badge
+                  variant={
+                    formData.applicantType &&
                     formData.applicantDescription.length >= 50 &&
                     formData.countryOfOrigin
-                      ? "Complete"
-                      : "Required"}
-                  </Badge>
-                </div>
-                {expandedSections.applicant ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </CollapsibleTrigger>
+                      ? "default"
+                      : "secondary"
+                  }
+                  className="ml-2"
+                >
+                  {formData.applicantType &&
+                  formData.applicantDescription.length >= 50 &&
+                  formData.countryOfOrigin
+                    ? "Complete"
+                    : "Required"}
+                </Badge>
+              </div>
 
-              <CollapsibleContent className="space-y-6 pt-6">
+              <div className="space-y-4">
                 <div className="space-y-4">
                   <Label className="text-gray-900 dark:text-gray-100">
                     Applicant Type *
@@ -552,7 +408,7 @@ export function ExpressionOfInterestForm() {
                     }
                     className="space-y-2"
                   >
-                    <div className="flex items-center space-x-2 pt-5">
+                    <div className="flex items-center space-x-2 pt-3">
                       <RadioGroupItem
                         value="individual"
                         id="individual"
@@ -620,9 +476,6 @@ export function ExpressionOfInterestForm() {
                       {errors.applicantDescription}
                     </p>
                   )}
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {formData.applicantDescription.length}/50 characters minimum
-                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -662,165 +515,57 @@ export function ExpressionOfInterestForm() {
                     </p>
                   )}
                 </div>
-              </CollapsibleContent>
-            </Collapsible>
+              </div>
+            </div>
 
             <Separator className="bg-gray-200 dark:bg-gray-700" />
 
             {/* Online Presence Section */}
-            <Collapsible
-              open={expandedSections.online}
-              onOpenChange={() => toggleSection("online")}
-            >
-              <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <div className="flex items-center gap-2">
-                  <Globe className="h-5 w-5 text-blue-500 dark:text-blue-400" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Online Presence
-                  </h3>
-                  <Badge variant="outline" className="ml-2">
-                    Optional
-                  </Badge>
-                </div>
-                {expandedSections.online ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </CollapsibleTrigger>
+            <div className="space-y-4 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Globe className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Online Presence
+                </h3>
+                <Badge variant="outline" className="ml-2">
+                  Optional
+                </Badge>
+              </div>
 
-              <CollapsibleContent className="space-y-6 pt-6">
-                <Alert className="border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20">
-                  <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <AlertDescription className="text-blue-800 dark:text-blue-200">
-                    This section is optional but helps us understand your
-                    digital presence and marketing strategy.
-                  </AlertDescription>
-                </Alert>
+              <Alert className="border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20">
+                <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <AlertDescription className="text-blue-800 dark:text-blue-200">
+                  This section is optional but helps us understand your digital
+                  presence and marketing strategy.
+                </AlertDescription>
+              </Alert>
 
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="hasWebsite"
-                      checked={formData.hasWebsite}
-                      onCheckedChange={(checked) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          hasWebsite: checked as boolean,
-                        }))
-                      }
-                      className="border-gray-300 dark:border-gray-600"
-                    />
-                    <Label
-                      htmlFor="hasWebsite"
-                      className="text-gray-900 dark:text-gray-100"
-                    >
-                      We have a website
-                    </Label>
-                  </div>
-
-                  {formData.hasWebsite && (
-                    <div className="space-y-2 ml-6">
-                      <Label
-                        htmlFor="websiteUrl"
-                        className="text-gray-900 dark:text-gray-100"
-                      >
-                        Website URL
-                      </Label>
-                      <Input
-                        id="websiteUrl"
-                        type="url"
-                        placeholder="https://www.yourwebsite.com"
-                        value={formData.websiteUrl}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            websiteUrl: e.target.value,
-                          }))
-                        }
-                        className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                      />
-                      {errors.websiteUrl && (
-                        <p className="text-sm text-red-500 dark:text-red-400">
-                          {errors.websiteUrl}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="hasSocialMedia"
-                      checked={formData.hasSocialMedia}
-                      onCheckedChange={(checked) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          hasSocialMedia: checked as boolean,
-                        }))
-                      }
-                      className="border-gray-300 dark:border-gray-600"
-                    />
-                    <Label
-                      htmlFor="hasSocialMedia"
-                      className="text-gray-900 dark:text-gray-100"
-                    >
-                      We have social media presence
-                    </Label>
-                  </div>
-
-                  {formData.hasSocialMedia && (
-                    <div className="space-y-2 ml-6">
-                      <Label
-                        htmlFor="socialMediaLinks"
-                        className="text-gray-900 dark:text-gray-100"
-                      >
-                        Social Media Links
-                      </Label>
-                      <Textarea
-                        id="socialMediaLinks"
-                        placeholder="List your social media profiles (Facebook, LinkedIn, Twitter, etc.)"
-                        value={formData.socialMediaLinks}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            socialMediaLinks: e.target.value,
-                          }))
-                        }
-                        rows={3}
-                        className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                      />
-                      {errors.socialMediaLinks && (
-                        <p className="text-sm text-red-500 dark:text-red-400">
-                          {errors.socialMediaLinks}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="onlinePresence"
-                      className="text-gray-900 dark:text-gray-100"
-                    >
-                      Additional Online Presence
-                    </Label>
-                    <Textarea
-                      id="onlinePresence"
-                      placeholder="Describe any other online presence, digital marketing strategies, or e-commerce platforms you use..."
-                      value={formData.onlinePresence}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          onlinePresence: e.target.value,
-                        }))
-                      }
-                      rows={3}
-                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                    />
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="onlinePresence"
+                  className="text-gray-900 dark:text-gray-100"
+                >
+                  Website or Social Media Link
+                </Label>
+                <Input
+                  id="onlinePresence"
+                  type="url"
+                  placeholder="https://www.yourwebsite.com or https://facebook.com/yourpage"
+                  value={formData.onlinePresence}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      onlinePresence: e.target.value,
+                    }))
+                  }
+                  className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                />
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Share your website, Facebook page, LinkedIn profile, or any
+                  other online presence
+                </p>
+              </div>
+            </div>
 
             <Separator className="bg-gray-200 dark:bg-gray-700" />
 
@@ -851,7 +596,7 @@ export function ExpressionOfInterestForm() {
                     Submitting...
                   </span>
                 ) : (
-                  "Submit"
+                  "Submit "
                 )}
               </Button>
             </div>

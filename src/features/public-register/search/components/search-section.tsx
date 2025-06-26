@@ -19,7 +19,7 @@ const dummyEntities: EntityData[] = [
     entityStatus: "Registered",
     address: "1 Marina Bay, #20-01, Singapore 018989",
     registeredDate: "2023-01-15",
-    entityType: "PCLBS",
+    entityType: "Private Company Limited by Shares",
     businessActivity: "Software Development and IT Services",
     licenses: "None",
   },
@@ -67,7 +67,7 @@ const dummyEntities: EntityData[] = [
     entityStatus: "Registered",
     address: "Banking Square, Thimphu, Bhutan",
     registeredDate: "2021-09-10",
-    entityType: "PCLBS",
+    entityType: "Private Company Limited by Shares",
     businessActivity: "Commercial Banking and Financial Services",
     licenses: "Financial Services License",
     fslNumber: "FSL-2021-005",
@@ -102,7 +102,7 @@ const dummyEntities: EntityData[] = [
     entityStatus: "Registered",
     address: "IT Park, Thimphu, Bhutan",
     registeredDate: "2023-12-01",
-    entityType: "PCLBS",
+    entityType: "Private Company Limited by Shares",
     businessActivity: "Information Technology and Software Solutions",
     licenses: "None",
   },
@@ -143,10 +143,7 @@ export function SearchSection() {
       const filtered = dummyEntities.filter(
         (entity) =>
           entity.entityName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          entity.uen.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          entity.businessActivity
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
+          entity.uen.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setSearchResults(filtered);
     } else {
@@ -206,7 +203,7 @@ export function SearchSection() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="Enter entity name, UEN, or business activity to begin search"
+                    placeholder="Enter entity name or UEN to begin search"
                     className="rounded-xl border-2 border-gray-200 py-3 pl-10 text-base transition-colors hover:border-gray-400 focus:border-gray-900 sm:py-4 sm:pl-12 sm:text-lg dark:border-gray-600 dark:hover:border-gray-400 dark:focus:border-white"
                   />
                 </div>
