@@ -10,21 +10,23 @@ export default function StartBusinessPage() {
   useEffect(() => {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
-    img.src = "/images/bhutanese-background.png"; // 👈 CHANGE THIS TO YOUR BACKGROUND IMAGE
+    img.src = "/images/Gelephu Dzo.svg";
   }, []);
 
   return (
     <div className="relative w-full min-h-screen">
-      {/* Background Image Layer */}
+      {/* Background Image Layer (full, responsive) */}
       {imageLoaded && (
         <div
-          className="absolute inset-0 z-0"
+          className="fixed inset-0 z-0"
           style={{
-            backgroundImage: `url('/images/bhutanese-background.png')`, // 👈 CHANGE THIS TO YOUR BACKGROUND IMAGE
-            backgroundSize: "cover",
+            backgroundImage: `url('/images/Gelephu Dzo.svg')`,
+            backgroundSize: "contain",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             backgroundAttachment: "scroll",
+            backgroundColor: "#fff",
+            filter: "blur(2px)",
           }}
         />
       )}

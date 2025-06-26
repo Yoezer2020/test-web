@@ -14,21 +14,23 @@ export default function PublicRegisterPage() {
   useEffect(() => {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
-    img.src = "/images/bhutanese-background.png";
+    img.src = "/images/Gelephu Dzo.svg";
   }, []);
 
   return (
     <div className="relative w-full max-w-screen overflow-x-hidden transition-all duration-500">
-      {/* Background Image Layer (blurred) */}
+      {/* Background Image Layer (full, responsive) */}
       {imageLoaded && (
         <div
           className="fixed inset-0 z-0"
           style={{
-            backgroundImage: `url('/images/bhutanese-background.png')`,
-            backgroundSize: "cover",
+            backgroundImage: `url('/images/Gelephu Dzo.svg')`,
+            backgroundSize: "contain",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             backgroundAttachment: "scroll",
+            backgroundColor: "#fff",
+            filter: "blur(2px)",
           }}
         />
       )}
