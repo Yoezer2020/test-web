@@ -61,7 +61,6 @@ function LogoComponent() {
             priority
           />
         )}
-
         {/* Dark Mode Logo */}
         {!logoError.dark && (
           <Image
@@ -105,97 +104,7 @@ function ModeToggle() {
 function NavigationMenu() {
   return (
     <nav className="hidden items-center space-x-6 lg:flex">
-      {/* <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex items-center gap-1 transition-all duration-200 hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            Register
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="border-2 border-gray-200 dark:border-white/20">
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            New Registration
-          </DropdownMenuItem>
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            Entity Types
-          </DropdownMenuItem>
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            Requirements
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu> */}
-
-      {/* <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex items-center gap-1 transition-all duration-200 hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            Manage
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="border-2 border-gray-200 dark:border-white/20">
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            My Entities
-          </DropdownMenuItem>
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            Update Information
-          </DropdownMenuItem>
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            Compliance
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex items-center gap-1 transition-all duration-200 hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            Annual Filing
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="border-2 border-gray-200 dark:border-white/20">
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            File Annual Return
-          </DropdownMenuItem>
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            Filing History
-          </DropdownMenuItem>
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            Deadlines
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex items-center gap-1 transition-all duration-200 hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            Others
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="border-2 border-gray-200 dark:border-white/20">
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            Forms & Guides
-          </DropdownMenuItem>
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            Fees
-          </DropdownMenuItem>
-          <DropdownMenuItem className="transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-            Support
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu> */}
+      {/* Navigation items */}
     </nav>
   );
 }
@@ -293,8 +202,9 @@ function MobileNavigation() {
                 Start a Business
               </NextLink>
             </Button>
-            <Button variant="ghost" className="w-full">
-              Login
+            {/* Updated Mobile Login Button */}
+            <Button asChild variant="ghost" className="w-full">
+              <NextLink href="/login">Login</NextLink>
             </Button>
             <Button className="w-full bg-gray-900 text-white dark:bg-white dark:text-gray-900">
               Sign up free →
@@ -317,16 +227,6 @@ export function PublicHeader() {
               <LogoComponent />
             </NextLink>
           </div>
-          {/* CTA Button - Hidden on mobile */}
-          <Button
-            asChild
-            size="sm"
-            className="hidden sm:flex bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-          >
-            <NextLink href="/public-register/start-business">
-              Start a Business
-            </NextLink>
-          </Button>
 
           {/* Navigation - Center */}
           <NavigationMenu />
@@ -336,10 +236,21 @@ export function PublicHeader() {
             {/* Desktop Auth Buttons - Hidden on mobile */}
             <div className="hidden lg:flex items-center space-x-2">
               <Button
+                asChild
+                size="sm"
+                className="hidden sm:flex bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              >
+                <NextLink href="/public-register/start-business">
+                  Start a Business
+                </NextLink>
+              </Button>
+              {/* Updated Desktop Login Button */}
+              <Button
+                asChild
                 size="sm"
                 className="bg-gray-900 text-white transition-all duration-200 hover:scale-105 hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
               >
-                Login →
+                <NextLink href="/auth/login">Login →</NextLink>
               </Button>
             </div>
 

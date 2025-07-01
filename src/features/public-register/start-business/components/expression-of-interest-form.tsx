@@ -1,7 +1,8 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import type { ReactElement } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -33,7 +34,6 @@ import {
   User,
   Users,
 } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Dialog,
   DialogContent,
@@ -41,6 +41,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { FileUpload } from "@/components/inputs/single-file-upload/file-upload-single";
+import { toast } from "sonner";
 
 interface FormData {
   email: string;
@@ -50,6 +52,27 @@ interface FormData {
   applicantDescription: string;
   countryOfOrigin: string;
   onlinePresence: string;
+  // CSP specific fields - updated to match requirements
+  cspContactName: string;
+  cspCompanyName: string;
+  cspUEN: string;
+  cspEstablishmentYear: string;
+  cspWebsite: string;
+  cspRQICount: string;
+  cspExperiencedRQICount: string;
+  cspYearsQualified: string;
+  cspLicenseExpiry: string;
+  cspACRALicense: string;
+  cspServices: string;
+  cspClientTypes: string[];
+  cspSecurityFeatures: string;
+  cspDifferentiators: string;
+  cspAdditionalInfo: string;
+  cspQuestions: string;
+  // File upload fields
+  cspACRANotice: File[];
+  cspCompanyProfile: File[];
+  cspFeeSchedule: File[];
 }
 
 const countries = [
@@ -66,7 +89,16 @@ const countries = [
   "Other",
 ];
 
-export function ExpressionOfInterestForm() {
+const cspClientTypes = [
+  "Small and Medium Enterprises",
+  "Large Corporations",
+  "Multinational Corporations",
+  "Listed Companies",
+  "Financial Institutions",
+  "Family Offices",
+];
+
+export function ExpressionOfInterestForm(): ReactElement {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     entityType: "",
@@ -75,6 +107,27 @@ export function ExpressionOfInterestForm() {
     applicantDescription: "",
     countryOfOrigin: "",
     onlinePresence: "",
+    // CSP fields
+    cspContactName: "",
+    cspCompanyName: "",
+    cspUEN: "",
+    cspEstablishmentYear: "",
+    cspWebsite: "",
+    cspRQICount: "",
+    cspExperiencedRQICount: "",
+    cspYearsQualified: "",
+    cspLicenseExpiry: "",
+    cspACRALicense: "",
+    cspServices: "",
+    cspClientTypes: [],
+    cspSecurityFeatures: "",
+    cspDifferentiators: "",
+    cspAdditionalInfo: "",
+    cspQuestions: "",
+    // File uploads
+    cspACRANotice: [],
+    cspCompanyProfile: [],
+    cspFeeSchedule: [],
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,24 +135,105 @@ export function ExpressionOfInterestForm() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Auto-save functionality
+  // const saveAsDraft = () => {
+  //   const { cspACRANotice, cspCompanyProfile, cspFeeSchedule, ...dataToSave } =
+  //     formData;
+  //   localStorage.setItem("eoi-draft", JSON.stringify(dataToSave));
+  //   console.log("data saved:", formData);
+  //   toast.success("Draft saved", {
+  //     description: "Your progress has been saved locally (files excluded).",
+  //   });
+  // };
+
+  // Load draft on component mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedDraft = localStorage.getItem("eoi-draft");
+      if (savedDraft) {
+        try {
+          const parsedDraft = JSON.parse(savedDraft);
+          setFormData((prev) => ({ ...prev, ...parsedDraft }));
+          toast.success("Draft loaded", {
+            description: "Your previous progress has been restored.",
+          });
+        } catch (error) {
+          console.error("Error loading draft:", error);
+        }
+      }
+    }
+  }, []);
+
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
     // Basic Information
-    if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.entityType) newErrors.entityType = "Entity type is required";
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
 
-    // Business Plan & Activities
+    if (!formData.entityType) newErrors.entityType = "Entity type is required";
     if (!formData.businessPlan)
       newErrors.businessPlan = "Business plan is required";
-
-    // Applicant Information
     if (!formData.applicantType)
       newErrors.applicantType = "Applicant type is required";
-    if (!formData.applicantDescription)
-      newErrors.applicantDescription = "Detailed description is required";
+
+    if (formData.applicantType === "csp") {
+      // CSP specific validation - all 20 requirements
+      if (!formData.cspContactName)
+        newErrors.cspContactName =
+          "Primary contact name and position is required";
+      if (!formData.cspCompanyName)
+        newErrors.cspCompanyName = "Official company name is required";
+      if (!formData.cspUEN) newErrors.cspUEN = "UEN is required";
+      if (!formData.cspEstablishmentYear)
+        newErrors.cspEstablishmentYear = "Year established is required";
+      if (!formData.cspWebsite)
+        newErrors.cspWebsite = "Official website address is required";
+      if (!formData.cspRQICount)
+        newErrors.cspRQICount = "Number of RQIs is required";
+      if (!formData.cspExperiencedRQICount)
+        newErrors.cspExperiencedRQICount =
+          "Number of experienced RQIs is required";
+      if (!formData.cspYearsQualified)
+        newErrors.cspYearsQualified = "Years qualified as CSP is required";
+      if (!formData.cspLicenseExpiry)
+        newErrors.cspLicenseExpiry = "RFA license expiry date is required";
+      if (formData.cspACRANotice.length === 0)
+        newErrors.cspACRANotice = "ACRA notice upload is required";
+      if (!formData.cspACRALicense)
+        newErrors.cspACRALicense =
+          "ACRA registered filing agent status is required";
+      if (!formData.cspServices)
+        newErrors.cspServices = "Services description is required";
+      if (formData.cspClientTypes.length === 0)
+        newErrors.cspClientTypes = "At least one client type must be selected";
+      if (!formData.cspSecurityFeatures)
+        newErrors.cspSecurityFeatures =
+          "Security features description is required";
+      if (formData.cspFeeSchedule.length === 0)
+        newErrors.cspFeeSchedule = "Fee schedule upload is required";
+      if (!formData.cspDifferentiators)
+        newErrors.cspDifferentiators = "Service differentiators are required";
+    } else {
+      if (!formData.applicantDescription) {
+        newErrors.applicantDescription = "Detailed description is required";
+      }
+    }
+
     if (!formData.countryOfOrigin)
       newErrors.countryOfOrigin = "Country of origin is required";
+
+    // Optional URL validation
+    if (
+      formData.onlinePresence &&
+      !/^https?:\/\/.+/.test(formData.onlinePresence)
+    ) {
+      newErrors.onlinePresence =
+        "Please enter a valid URL (starting with http:// or https://)";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -120,30 +254,69 @@ export function ExpressionOfInterestForm() {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Here you would normally send the data to your API
       console.log("Form data being submitted:", formData);
 
+      // Clear draft after successful submission
+      localStorage.removeItem("eoi-draft");
       setSubmitSuccess(true);
+
+      toast.success("Application submitted successfully!", {
+        description: "You will receive a confirmation email shortly.",
+      });
     } catch (error) {
       console.error("Submission error:", error);
-      // You could add error handling here
+      toast.error("Submission failed", {
+        description:
+          "Please try again or contact support if the problem persists.",
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const getCompletionStatus = () => {
-    const requiredFields = [
+    let requiredFields = [
       formData.email,
       formData.entityType,
       formData.businessPlan,
       formData.applicantType,
-      formData.applicantDescription,
       formData.countryOfOrigin,
     ];
 
-    const completed = requiredFields.filter(Boolean).length;
-    const total = requiredFields.length;
+    if (formData.applicantType === "csp") {
+      requiredFields = requiredFields.concat([
+        formData.cspContactName,
+        formData.cspCompanyName,
+        formData.cspUEN,
+        formData.cspEstablishmentYear,
+        formData.cspWebsite,
+        formData.cspRQICount,
+        formData.cspExperiencedRQICount,
+        formData.cspYearsQualified,
+        formData.cspLicenseExpiry,
+        formData.cspACRALicense,
+        formData.cspServices,
+        formData.cspSecurityFeatures,
+        formData.cspDifferentiators,
+      ]);
+    } else {
+      requiredFields.push(formData.applicantDescription);
+    }
+
+    const completed =
+      requiredFields.filter(Boolean).length +
+      (formData.applicantType === "csp" && formData.cspClientTypes.length > 0
+        ? 1
+        : 0) +
+      (formData.applicantType === "csp" && formData.cspACRANotice.length > 0
+        ? 1
+        : 0) +
+      (formData.applicantType === "csp" && formData.cspFeeSchedule.length > 0
+        ? 1
+        : 0);
+
+    const total =
+      requiredFields.length + (formData.applicantType === "csp" ? 3 : 0);
 
     return {
       completed,
@@ -181,6 +354,25 @@ export function ExpressionOfInterestForm() {
                 applicantDescription: "",
                 countryOfOrigin: "",
                 onlinePresence: "",
+                cspContactName: "",
+                cspCompanyName: "",
+                cspUEN: "",
+                cspEstablishmentYear: "",
+                cspWebsite: "",
+                cspRQICount: "",
+                cspExperiencedRQICount: "",
+                cspYearsQualified: "",
+                cspLicenseExpiry: "",
+                cspACRALicense: "",
+                cspServices: "",
+                cspClientTypes: [],
+                cspSecurityFeatures: "",
+                cspDifferentiators: "",
+                cspAdditionalInfo: "",
+                cspQuestions: "",
+                cspACRANotice: [],
+                cspCompanyProfile: [],
+                cspFeeSchedule: [],
               });
               setErrors({});
             }}
@@ -200,10 +392,23 @@ export function ExpressionOfInterestForm() {
     <>
       <Card className="border-2 border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-xl">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
-            <FileText className="h-5 w-5 text-blue-500 dark:text-blue-400" />
-            Expression of Interest Form
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+              <CardTitle className="text-gray-900 dark:text-white">
+                Expression of Interest Form
+              </CardTitle>
+            </div>
+            {/* <Button
+              onClick={saveAsDraft}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 bg-transparent"
+            >
+              <Save className="h-4 w-4" />
+              Save Draft
+            </Button> */}
+          </div>
           <CardDescription className="text-gray-600 dark:text-gray-300 pt-4">
             Please provide accurate information for your business registration
           </CardDescription>
@@ -276,10 +481,6 @@ export function ExpressionOfInterestForm() {
                       {errors.email}
                     </p>
                   )}
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    This will be used to issue your credentials and communicate
-                    updates
-                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -318,12 +519,6 @@ export function ExpressionOfInterestForm() {
                       {errors.entityType}
                     </p>
                   )}
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {formData.entityType === "PCLBS" &&
-                      "A private company with share capital"}
-                    {formData.entityType === "Branch" &&
-                      "A branch office of a foreign company"}
-                  </p>
                 </div>
               </div>
             </div>
@@ -378,22 +573,6 @@ export function ExpressionOfInterestForm() {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Applicant Information
                 </h3>
-                <Badge
-                  variant={
-                    formData.applicantType &&
-                    formData.applicantDescription.length >= 50 &&
-                    formData.countryOfOrigin
-                      ? "default"
-                      : "secondary"
-                  }
-                  className="ml-2"
-                >
-                  {formData.applicantType &&
-                  formData.applicantDescription.length >= 50 &&
-                  formData.countryOfOrigin
-                    ? "Complete"
-                    : "Required"}
-                </Badge>
               </div>
 
               <div className="space-y-4">
@@ -436,6 +615,20 @@ export function ExpressionOfInterestForm() {
                         Company Official
                       </Label>
                     </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem
+                        value="csp"
+                        id="csp"
+                        className="border-gray-300 dark:border-gray-600"
+                      />
+                      <Label
+                        htmlFor="csp"
+                        className="cursor-pointer text-gray-900 dark:text-gray-100"
+                      >
+                        <Building2 className="inline h-4 w-4 mr-1" />
+                        CSP (Corporate Service Provider)
+                      </Label>
+                    </div>
                   </RadioGroup>
                   {errors.applicantType && (
                     <p className="text-sm text-red-500 dark:text-red-400">
@@ -444,39 +637,592 @@ export function ExpressionOfInterestForm() {
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="applicantDescription"
-                    className="text-gray-900 dark:text-gray-100"
-                  >
-                    {formData.applicantType === "individual"
-                      ? "Personal Background"
-                      : "Company Information"}{" "}
-                    *
-                  </Label>
-                  <Textarea
-                    id="applicantDescription"
-                    placeholder={
-                      formData.applicantType === "individual"
-                        ? "Describe your professional background, experience, and qualifications..."
-                        : "Provide company details, registration information, and authorized representative details..."
-                    }
-                    value={formData.applicantDescription}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        applicantDescription: e.target.value,
-                      }))
-                    }
-                    rows={4}
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                  />
-                  {errors.applicantDescription && (
-                    <p className="text-sm text-red-500 dark:text-red-400">
-                      {errors.applicantDescription}
-                    </p>
-                  )}
-                </div>
+                {formData.applicantType === "csp" ? (
+                  // Complete CSP section with all 20 requirements
+                  <div className="space-y-8">
+                    {/* Basic CSP Information */}
+                    <div className="space-y-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                      <h4 className="font-medium text-gray-900 dark:text-white">
+                        Basic Information
+                      </h4>
+
+                      {/* 2. Primary Contact */}
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspContactName"
+                          className="text-gray-900 dark:text-gray-100"
+                        >
+                          Primary Contact Name and Position *
+                        </Label>
+                        <Input
+                          id="cspContactName"
+                          placeholder="Full name and position/title of primary contact person"
+                          value={formData.cspContactName}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspContactName: e.target.value,
+                            }))
+                          }
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspContactName && (
+                          <p className="text-sm text-red-500">
+                            {errors.cspContactName}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* 3. Company Name */}
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspCompanyName"
+                          className="text-gray-900 dark:text-gray-100"
+                        >
+                          Official Company Name *
+                        </Label>
+                        <Input
+                          id="cspCompanyName"
+                          placeholder="Company name as officially registered"
+                          value={formData.cspCompanyName}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspCompanyName: e.target.value,
+                            }))
+                          }
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspCompanyName && (
+                          <p className="text-sm text-red-500">
+                            {errors.cspCompanyName}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* 4. UEN */}
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="cspUEN"
+                            className="text-gray-900 dark:text-gray-100"
+                          >
+                            UEN *
+                          </Label>
+                          <Input
+                            id="cspUEN"
+                            placeholder="Unique Entity Number"
+                            value={formData.cspUEN}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                cspUEN: e.target.value,
+                              }))
+                            }
+                            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                          />
+                          {errors.cspUEN && (
+                            <p className="text-sm text-red-500">
+                              {errors.cspUEN}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* 5. Year Established */}
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="cspEstablishmentYear"
+                            className="text-gray-900 dark:text-gray-100"
+                          >
+                            Year Established *
+                          </Label>
+                          <Input
+                            id="cspEstablishmentYear"
+                            type="number"
+                            placeholder="YYYY"
+                            min="1900"
+                            max={new Date().getFullYear()}
+                            value={formData.cspEstablishmentYear}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                cspEstablishmentYear: e.target.value,
+                              }))
+                            }
+                            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                          />
+                          {errors.cspEstablishmentYear && (
+                            <p className="text-sm text-red-500">
+                              {errors.cspEstablishmentYear}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 6. Website */}
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspWebsite"
+                          className="text-gray-900 dark:text-gray-100"
+                        >
+                          Official Website Address *
+                        </Label>
+                        <Input
+                          id="cspWebsite"
+                          type="url"
+                          placeholder="https://www.yourcompany.com"
+                          value={formData.cspWebsite}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspWebsite: e.target.value,
+                            }))
+                          }
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspWebsite && (
+                          <p className="text-sm text-red-500">
+                            {errors.cspWebsite}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Background Information */}
+                    <div className="space-y-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                      <h4 className="font-medium text-gray-900 dark:text-white">
+                        Background Information
+                      </h4>
+
+                      {/* 7. RQI Information */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="cspRQICount"
+                            className="text-gray-900 dark:text-gray-100"
+                          >
+                            Number of RQIs Employed *
+                          </Label>
+                          <Input
+                            id="cspRQICount"
+                            type="number"
+                            min="0"
+                            placeholder="Total RQIs"
+                            value={formData.cspRQICount}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                cspRQICount: e.target.value,
+                              }))
+                            }
+                            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                          />
+                          {errors.cspRQICount && (
+                            <p className="text-sm text-red-500">
+                              {errors.cspRQICount}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="cspExperiencedRQICount"
+                            className="text-gray-900 dark:text-gray-100"
+                          >
+                            RQIs with 5+ Years Experience *
+                          </Label>
+                          <Input
+                            id="cspExperiencedRQICount"
+                            type="number"
+                            min="0"
+                            placeholder="Experienced RQIs"
+                            value={formData.cspExperiencedRQICount}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                cspExperiencedRQICount: e.target.value,
+                              }))
+                            }
+                            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                          />
+                          {errors.cspExperiencedRQICount && (
+                            <p className="text-sm text-red-500">
+                              {errors.cspExperiencedRQICount}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* 8. Years Qualified */}
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="cspYearsQualified"
+                            className="text-gray-900 dark:text-gray-100"
+                          >
+                            Years Qualified as CSP in Singapore *
+                          </Label>
+                          <Input
+                            id="cspYearsQualified"
+                            type="number"
+                            min="0"
+                            placeholder="Years"
+                            value={formData.cspYearsQualified}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                cspYearsQualified: e.target.value,
+                              }))
+                            }
+                            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                          />
+                          {errors.cspYearsQualified && (
+                            <p className="text-sm text-red-500">
+                              {errors.cspYearsQualified}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* 9. License Expiry */}
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="cspLicenseExpiry"
+                            className="text-gray-900 dark:text-gray-100"
+                          >
+                            RFA License Expiry Date *
+                          </Label>
+                          <Input
+                            id="cspLicenseExpiry"
+                            type="date"
+                            value={formData.cspLicenseExpiry}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                cspLicenseExpiry: e.target.value,
+                              }))
+                            }
+                            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                          />
+                          {errors.cspLicenseExpiry && (
+                            <p className="text-sm text-red-500">
+                              {errors.cspLicenseExpiry}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 10. ACRA Notice Upload */}
+                      <FileUpload
+                        id="cspACRANotice"
+                        label="ACRA Notice Upload"
+                        description="Upload the notice from ACRA stating the validity of your RFA license and date of expiry"
+                        required={true}
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        onFileChange={(files) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspACRANotice: files,
+                          }))
+                        }
+                        error={errors.cspACRANotice}
+                      />
+
+                      {/* 11. ACRA License Status */}
+                      <div className="space-y-2">
+                        <Label className="text-gray-900 dark:text-gray-100">
+                          ACRA Registered Filing Agent Status *
+                        </Label>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                          Is your company currently licensed or registered with
+                          ACRA as a &quot;registered filing agent&quot; as
+                          defined under section 31 of the Singapore ACRA Act?
+                        </p>
+                        <RadioGroup
+                          value={formData.cspACRALicense}
+                          onValueChange={(value) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspACRALicense: value,
+                            }))
+                          }
+                          className="flex gap-6"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="yes" id="acra-yes" />
+                            <Label htmlFor="acra-yes">Yes</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="no" id="acra-no" />
+                            <Label htmlFor="acra-no">No</Label>
+                          </div>
+                        </RadioGroup>
+                        {errors.cspACRALicense && (
+                          <p className="text-sm text-red-500">
+                            {errors.cspACRALicense}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* 12. Services Provided */}
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspServices"
+                          className="text-gray-900 dark:text-gray-100"
+                        >
+                          Services Provided *
+                        </Label>
+                        <Textarea
+                          id="cspServices"
+                          placeholder="Please state all services provided by your company, eg CSP, registered office, accounting, tax, trust, private client, etc."
+                          value={formData.cspServices}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspServices: e.target.value,
+                            }))
+                          }
+                          rows={3}
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspServices && (
+                          <p className="text-sm text-red-500">
+                            {errors.cspServices}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* 13. Company Profile Upload */}
+                      <FileUpload
+                        id="cspCompanyProfile"
+                        label="Company Profile and Services Listing"
+                        description="If you have a listing of your services and/or company profile, please upload"
+                        required={false}
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        multiple={true}
+                        onFileChange={(files) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspCompanyProfile: files,
+                          }))
+                        }
+                      />
+
+                      {/* 14. Client Types */}
+                      <div className="space-y-2">
+                        <Label className="text-gray-900 dark:text-gray-100">
+                          Client Types Served * (Select all that apply)
+                        </Label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {cspClientTypes.map((clientType) => (
+                            <div
+                              key={clientType}
+                              className="flex items-center space-x-2"
+                            >
+                              <input
+                                type="checkbox"
+                                id={`client-${clientType}`}
+                                checked={formData.cspClientTypes.includes(
+                                  clientType
+                                )}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      cspClientTypes: [
+                                        ...prev.cspClientTypes,
+                                        clientType,
+                                      ],
+                                    }));
+                                  } else {
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      cspClientTypes:
+                                        prev.cspClientTypes.filter(
+                                          (type) => type !== clientType
+                                        ),
+                                    }));
+                                  }
+                                }}
+                                className="rounded border-gray-300"
+                              />
+                              <Label
+                                htmlFor={`client-${clientType}`}
+                                className="text-sm"
+                              >
+                                {clientType}
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                        {errors.cspClientTypes && (
+                          <p className="text-sm text-red-500">
+                            {errors.cspClientTypes}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* 15. Security Features */}
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspSecurityFeatures"
+                          className="text-gray-900 dark:text-gray-100"
+                        >
+                          Security Features and Data Protection *
+                        </Label>
+                        <Textarea
+                          id="cspSecurityFeatures"
+                          placeholder="Please briefly describe the security features your company has in place to handle sensitive documents, and ensure data protection and client confidentiality"
+                          value={formData.cspSecurityFeatures}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspSecurityFeatures: e.target.value,
+                            }))
+                          }
+                          rows={4}
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspSecurityFeatures && (
+                          <p className="text-sm text-red-500">
+                            {errors.cspSecurityFeatures}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Miscellaneous Information */}
+                    <div className="space-y-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                      <h4 className="font-medium text-gray-900 dark:text-white">
+                        Miscellaneous Information
+                      </h4>
+
+                      {/* 17. Fee Schedule Upload */}
+                      <FileUpload
+                        id="cspFeeSchedule"
+                        label="Current Fee Schedule"
+                        description="Please provide your current fee schedule for CSP services carried out by your company"
+                        required={true}
+                        accept=".pdf,.doc,.docx,.xls,.xlsx"
+                        onFileChange={(files) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspFeeSchedule: files,
+                          }))
+                        }
+                        error={errors.cspFeeSchedule}
+                      />
+
+                      {/* 18. Service Differentiators */}
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspDifferentiators"
+                          className="text-gray-900 dark:text-gray-100"
+                        >
+                          Service Differentiators *
+                        </Label>
+                        <Textarea
+                          id="cspDifferentiators"
+                          placeholder="What differentiates your company's CSP services from others in the market?"
+                          value={formData.cspDifferentiators}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspDifferentiators: e.target.value,
+                            }))
+                          }
+                          rows={3}
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspDifferentiators && (
+                          <p className="text-sm text-red-500">
+                            {errors.cspDifferentiators}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* 19. Additional Supporting Information */}
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspAdditionalInfo"
+                          className="text-gray-900 dark:text-gray-100"
+                        >
+                          Additional Supporting Information
+                        </Label>
+                        <Textarea
+                          id="cspAdditionalInfo"
+                          placeholder="Please provide any additional information that you believe may support your company's Expression of Interest"
+                          value={formData.cspAdditionalInfo}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspAdditionalInfo: e.target.value,
+                            }))
+                          }
+                          rows={3}
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                      </div>
+
+                      {/* 20. Questions */}
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspQuestions"
+                          className="text-gray-900 dark:text-gray-100"
+                        >
+                          Questions about GMC/GCRO
+                        </Label>
+                        <Textarea
+                          id="cspQuestions"
+                          placeholder="Any questions about the GMC and/or for the GCRO?"
+                          value={formData.cspQuestions}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspQuestions: e.target.value,
+                            }))
+                          }
+                          rows={3}
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Original applicant description field for individual/company
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="applicantDescription"
+                      className="text-gray-900 dark:text-gray-100"
+                    >
+                      {formData.applicantType === "individual"
+                        ? "Personal Background"
+                        : "Company Information"}{" "}
+                      *
+                    </Label>
+                    <Textarea
+                      id="applicantDescription"
+                      placeholder={
+                        formData.applicantType === "individual"
+                          ? "Describe your professional background, experience, and qualifications..."
+                          : "Provide company details, registration information, and authorized representative details..."
+                      }
+                      value={formData.applicantDescription}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          applicantDescription: e.target.value,
+                        }))
+                      }
+                      rows={4}
+                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    />
+                    {errors.applicantDescription && (
+                      <p className="text-sm text-red-500 dark:text-red-400">
+                        {errors.applicantDescription}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label
@@ -532,14 +1278,6 @@ export function ExpressionOfInterestForm() {
                 </Badge>
               </div>
 
-              <Alert className="border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20">
-                <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                <AlertDescription className="text-blue-800 dark:text-blue-200">
-                  This section is optional but helps us understand your digital
-                  presence and marketing strategy.
-                </AlertDescription>
-              </Alert>
-
               <div className="space-y-2">
                 <Label
                   htmlFor="onlinePresence"
@@ -550,7 +1288,7 @@ export function ExpressionOfInterestForm() {
                 <Input
                   id="onlinePresence"
                   type="url"
-                  placeholder="https://www.yourwebsite.com or https://facebook.com/yourpage"
+                  placeholder="https://www.yourwebsite.com"
                   value={formData.onlinePresence}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -560,10 +1298,11 @@ export function ExpressionOfInterestForm() {
                   }
                   className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 />
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Share your website, Facebook page, LinkedIn profile, or any
-                  other online presence
-                </p>
+                {errors.onlinePresence && (
+                  <p className="text-sm text-red-500 dark:text-red-400">
+                    {errors.onlinePresence}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -596,7 +1335,7 @@ export function ExpressionOfInterestForm() {
                     Submitting...
                   </span>
                 ) : (
-                  "Submit "
+                  "Submit"
                 )}
               </Button>
             </div>
@@ -613,53 +1352,27 @@ export function ExpressionOfInterestForm() {
               Confirm Submission
             </DialogTitle>
           </DialogHeader>
-
           <div className="space-y-4 py-4">
-            <div className="flex items-start gap-4">
-              <div className="space-y-2">
-                <h6 className="font-medium text-gray-500 dark:text-gray-100">
-                  Are you sure you want to submit your Expression of Interest?
-                </h6>
-              </div>
-            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Are you sure you want to submit your Expression of Interest?
+              Please review all information and uploaded files before
+              submitting.
+            </p>
           </div>
-
           <DialogFooter className="gap-2 sm:gap-0">
             <Button
               variant="outline"
               onClick={() => setShowConfirmation(false)}
               disabled={isSubmitting}
-              className="w-full sm:w-auto"
             >
               Go Back
             </Button>
             <Button
               onClick={confirmSubmission}
               disabled={isSubmitting}
-              className="w-full sm:w-auto bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+              className="bg-green-600 hover:bg-green-700"
             >
-              {isSubmitting ? (
-                <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Submitting...
-                </span>
-              ) : (
-                "Confirm Submission"
-              )}
+              {isSubmitting ? "Submitting..." : "Confirm Submission"}
             </Button>
           </DialogFooter>
         </DialogContent>

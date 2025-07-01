@@ -140,11 +140,17 @@ export function SearchSection() {
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      const filtered = dummyEntities.filter(
-        (entity) =>
-          entity.entityName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          entity.uen.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      const query = searchQuery.toLowerCase();
+      const filtered = dummyEntities.filter((entity) => {
+        // Exact UEN match (case-insensitive)
+        if (entity.uen.toLowerCase() === query) {
+          return true;
+        }
+
+        // Check if entity name STARTS WITH the search term (case-insensitive)
+        return entity.entityName.toLowerCase().startsWith(query);
+      });
+
       setSearchResults(filtered);
     } else {
       setSearchResults([]);
