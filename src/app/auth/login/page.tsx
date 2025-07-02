@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { SimpleImage } from "@/components/inputs/simple-image/simple-image";
 
 // Replace this with your background image URL
 
@@ -83,14 +84,14 @@ function LoginForm() {
       <Card className="w-full max-w-sm bg-black/90 border-gray-700 relative z-10 shadow-2xl">
         <CardContent className="p-8">
           {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-              <div className="w-8 h-8 border-2 border-black rounded grid grid-cols-3 gap-[1px]">
-                {[...Array(9)].map((_, i) => (
-                  <div key={i} className="bg-black rounded-[1px]" />
-                ))}
-              </div>
-            </div>
+          <div className="mb-8 flex items-center justify-center">
+            <SimpleImage
+              src="/images/logo-light.svg"
+              alt="Description"
+              width={70}
+              height={70}
+              fallback={<div className="w-10 h-10 bg-gray-200 rounded-full" />}
+            />
           </div>
 
           {/* Title */}

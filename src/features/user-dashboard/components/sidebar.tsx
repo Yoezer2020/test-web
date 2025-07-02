@@ -36,7 +36,7 @@ export function UserDashboardSidebar({
   return (
     <div className="w-64 bg-white border-r border-gray-200 shadow-sm">
       <div className="p-6">
-        <div className="mb-8 ml-8 h-12 w-32 flex items-center justify-center">
+        <div className="mb-8 flex items-center justify-center">
           <SimpleImage
             src="/images/logo-dark.svg"
             alt="Description"
