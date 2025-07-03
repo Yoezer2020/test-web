@@ -2,16 +2,30 @@
 
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface UserDashboardHeaderProps {
   onStartNewCompany?: () => void;
-  onLogout?: () => void;
 }
 
 export function UserDashboardHeader({
   onStartNewCompany,
-  onLogout,
 }: UserDashboardHeaderProps) {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await signOut({
+        redirect: false,
+      });
+      router.push("/auth/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
       <div className="flex items-center justify-between">
@@ -27,7 +41,7 @@ export function UserDashboardHeader({
           </Button>
 
           <Button
-            onClick={onLogout}
+            onClick={handleLogout}
             variant="ghost"
             className="text-gray-600 hover:text-black hover:bg-gray-100 font-medium"
             size="sm"

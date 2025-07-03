@@ -1,8 +1,11 @@
+// components/providers/session-provider.tsx
 "use client";
+import { SessionProvider as NextAuthSessionProvider } from "next-auth/react";
 
-import type React from "react";
-import { SessionProvider } from "next-auth/react";
+interface SessionProviderProps {
+  children: React.ReactNode;
+}
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  return <SessionProvider>{children}</SessionProvider>;
+export function SessionProvider({ children }: SessionProviderProps) {
+  return <NextAuthSessionProvider>{children}</NextAuthSessionProvider>;
 }
