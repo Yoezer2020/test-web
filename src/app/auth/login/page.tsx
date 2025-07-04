@@ -3,7 +3,6 @@
 import type React from "react";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn, getSession } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +12,8 @@ import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { SimpleImage } from "@/components/inputs/simple-image/simple-image";
+
+// Replace this with your background image URL
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -25,7 +26,6 @@ function LoginForm() {
 
   // Check for URL error parameters
   const urlError = searchParams.get("error");
-  const callbackUrl = searchParams.get("callbackUrl") || "/user-dashboard";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,29 +33,24 @@ function LoginForm() {
     setError("");
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      if (result?.error) {
-        throw new Error(result.error);
-      }
-
-      if (result?.ok) {
-        // Get the session to check user details
-        const session = await getSession();
-
+      // Demo validation
+      if (email === "admin@example.com" && password === "password123") {
         toast.success("Login successful!", {
-          description: `Welcome back${
-            session?.user?.name ? `, ${session.user.name}` : ""
-          }!`,
+          description: "Welcome back, Admin!",
         });
-
-        // Redirect to the callback URL or dashboard
-        router.push(callbackUrl);
-        router.refresh(); // Refresh to update session state
+        console.log("Admin login successful");
+        router.push("/user-dashboard");
+      } else if (email === "user@example.com" && password === "password123") {
+        toast.success("Login successful!", {
+          description: "Welcome back!",
+        });
+        console.log("User login successful");
+        router.push("/user-dashboard");
+      } else {
+        throw new Error("Invalid credentials");
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -70,30 +65,6 @@ function LoginForm() {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-  };
-
-  // Map NextAuth error codes to user-friendly messages
-  const getErrorMessage = (error: string) => {
-    switch (error) {
-      case "CredentialsSignin":
-        return "Invalid email or password. Please try again.";
-      case "OAuthSignin":
-      case "OAuthCallback":
-      case "OAuthCreateAccount":
-      case "EmailCreateAccount":
-      case "Callback":
-        return "Authentication failed. Please try again.";
-      case "OAuthAccountNotLinked":
-        return "Account not linked. Please sign in with the same provider you used before.";
-      case "EmailSignin":
-        return "Unable to send email. Please try again.";
-      case "CredentialsSignin":
-        return "Sign in failed. Check the details you provided are correct.";
-      case "SessionRequired":
-        return "Please sign in to access this page.";
-      default:
-        return "Authentication failed. Please try again.";
-    }
   };
 
   return (
@@ -113,7 +84,7 @@ function LoginForm() {
       <Card className="w-full max-w-sm bg-black/90 border-gray-700 relative z-10 shadow-2xl">
         <CardContent className="p-8">
           {/* Logo */}
-          <div className="mb-8 flex items-center justify-center">
+          <div className="mb-8 h-12 w-32 flex items-center justify-center">
             <SimpleImage
               src="/images/logo-light.svg"
               alt="Description"
@@ -133,7 +104,7 @@ function LoginForm() {
             <Alert className="border-red-500/50 bg-red-500/10 mb-6">
               <AlertCircle className="h-4 w-4 text-red-400" />
               <AlertDescription className="text-red-300">
-                {error || getErrorMessage(urlError || "")}
+                {error || "Authentication failed. Please try again."}
               </AlertDescription>
             </Alert>
           )}
