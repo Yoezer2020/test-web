@@ -84,7 +84,7 @@ function LoginForm() {
       <Card className="w-full max-w-sm bg-black/90 border-gray-700 relative z-10 shadow-2xl">
         <CardContent className="p-8">
           {/* Logo */}
-          <div className="mb-8 h-12 w-32 flex items-center justify-center">
+          <div className="mb-8 flex items-center justify-center">
             <SimpleImage
               src="/images/logo-light.svg"
               alt="Description"

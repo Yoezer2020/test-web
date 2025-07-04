@@ -1,7 +1,7 @@
 // app/user-dashboard/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { CompanyGrid } from "@/features/user-dashboard/components/company-grid";
@@ -12,8 +12,6 @@ import { UserDashboardHeader } from "@/features/user-dashboard/components/header
 import { UserDashboardSidebar } from "@/features/user-dashboard/components/sidebar";
 import { CompanyDashboardAlert } from "@/features/company-dashboard/components/dashboard-alert";
 import { PasswordUpdateModal } from "@/features/user-dashboard/components/password-update-modal";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation"; // Changed from next/router to next/navigation
 
 interface Company {
   id: string;
@@ -95,35 +93,22 @@ export default function UserDashboard() {
   const [activeItem, setActiveItem] = useState("dashboard");
   const [showAlert, setShowAlert] = useState(true);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const { data: session, status } = useSession();
-  const router = useRouter();
 
-  useEffect(() => {
-    if (status === "loading") return;
-    if (!session) {
-      router.push("/auth/login");
-    }
-  }, [session, status, router]);
-
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-          <span>Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!session) {
-    return null;
-  }
+  // if (status === "loading") {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center bg-gray-50">
+  //       <div className="flex items-center gap-2">
+  //         <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+  //         <span>Loading...</span>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   const userInfo = {
-    name: session.user?.name || "User",
-    email: session.user?.email || "user@example.com",
-    initials: (session.user?.name || "U").substring(0, 2).toUpperCase(),
+    name: "User",
+    email: "user@example.com",
+    initials: "U".substring(0, 2).toUpperCase(),
   };
 
   const filteredCompanies = mockCompanies.filter((company) => {

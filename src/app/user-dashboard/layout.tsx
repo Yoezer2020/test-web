@@ -1,6 +1,5 @@
 "use client";
 
-import { SessionProvider } from "@/components/session-provider";
 import type React from "react";
 
 interface DashboardLayoutProps {
@@ -8,5 +7,5 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  return <SessionProvider>{children}</SessionProvider>;
+  return [children];
 }
