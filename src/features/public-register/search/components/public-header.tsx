@@ -77,7 +77,7 @@ function LogoComponent() {
         )}
       </div>
       <span className="text-lg font-bold text-gray-900 dark:text-white">
-        GCRO
+        Gelephu Corporate Registration Office
       </span>
     </div>
   );

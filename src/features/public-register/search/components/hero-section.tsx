@@ -87,12 +87,9 @@ export function HeroSection() {
     >
       <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12 xl:gap-16">
         <div className="space-y-4 text-center sm:space-y-6 lg:text-left">
-          <h1 className="text-3xl leading-tight font-bold text-gray-900 sm:text-4xl lg:text-5xl xl:text-6xl dark:text-white">
-            Welcome to{" "}
-            <span className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent dark:from-white dark:to-gray-300">
-              GCRO
-            </span>
-          </h1>
+          <h2 className="text-xl leading-tight font-bold text-gray-900 sm:text-4xl lg:text-5xl xl:text-6xl dark:text-white">
+            Welcome to GCRO Digital Portal{" "}
+          </h2>
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-gray-600 sm:text-xl lg:mx-0 dark:text-gray-300">
             Your one-stop digital service portal for business registration,
             filing and information
