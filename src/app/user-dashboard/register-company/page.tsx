@@ -844,11 +844,11 @@ export default function CompanyRegistrationPage() {
 
                         <div className="space-y-2">
                           <Label htmlFor="subscriberPassport">
-                            Passport/ID Number *
+                            Passport/ID Number or FIN *
                           </Label>
                           <Input
                             id="subscriberPassport"
-                            placeholder="Enter passport or ID number"
+                            placeholder="Enter passport or ID number or FIN"
                             value={formData.subscriberPassport}
                             onChange={(e) =>
                               updateFormData(
@@ -1267,9 +1267,9 @@ export default function CompanyRegistrationPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label>Passport/ID Number *</Label>
+                          <Label>Passport/ID Number or FIN *</Label>
                           <Input
-                            placeholder="Enter passport/ID number"
+                            placeholder="Enter passport/ID number or FIN"
                             value={director.passport}
                             onChange={(e) =>
                               updateDirector(index, "passport", e.target.value)
@@ -1881,7 +1881,7 @@ export default function CompanyRegistrationPage() {
                           </Label>
                           <Textarea
                             id="companyBusinessNature"
-                            placeholder="Describe the nature of business"
+                            placeholder="Describe the nature and purpose of business"
                             value={formData.companyBusinessNature}
                             onChange={(e) =>
                               updateFormData(
