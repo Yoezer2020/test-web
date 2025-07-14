@@ -31,7 +31,6 @@ import {
   Building2,
   Globe,
   Users,
-  Sparkles,
   Award,
   Calendar,
   Shield,
@@ -44,17 +43,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { RadioGroup, RadioGroupItem } from "@radix-ui/react-radio-group";
 import { FileUpload } from "@/components/inputs/single-file-upload/file-upload-single";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface FormData {
   email: string;
   entityType: string;
   businessPlan: string;
-  applicantType: string;
   applicantDescription: string;
   countryOfOrigin: string;
   onlinePresence: string;
+  // CSP registration checkbox
+  registerAsCSP: boolean;
   // CSP specific fields - updated to match requirements
   cspContactName: string;
   cspCompanyName: string;
@@ -92,10 +92,11 @@ export function ExpressionOfInterestForm(): ReactElement {
     email: "",
     entityType: "",
     businessPlan: "",
-    applicantType: "",
     applicantDescription: "",
     countryOfOrigin: "",
     onlinePresence: "",
+    // CSP registration
+    registerAsCSP: false,
     // CSP fields
     cspContactName: "",
     cspCompanyName: "",
@@ -155,11 +156,13 @@ export function ExpressionOfInterestForm(): ReactElement {
     if (!formData.entityType) newErrors.entityType = "Entity type is required";
     if (!formData.businessPlan)
       newErrors.businessPlan = "Business plan is required";
-    if (!formData.applicantType)
-      newErrors.applicantType = "Applicant type is required";
+    if (!formData.applicantDescription)
+      newErrors.applicantDescription = "Applicant description is required";
+    if (!formData.countryOfOrigin)
+      newErrors.countryOfOrigin = "Country of origin is required";
 
-    if (formData.applicantType === "csp") {
-      // CSP specific validation - all 20 requirements
+    // CSP specific validation when checkbox is checked
+    if (formData.registerAsCSP) {
       if (!formData.cspContactName)
         newErrors.cspContactName =
           "Primary contact name and position is required";
@@ -195,14 +198,7 @@ export function ExpressionOfInterestForm(): ReactElement {
         newErrors.cspFeeSchedule = "Fee schedule upload is required";
       if (!formData.cspDifferentiators)
         newErrors.cspDifferentiators = "Service differentiators are required";
-    } else {
-      if (!formData.applicantDescription) {
-        newErrors.applicantDescription = "Detailed description is required";
-      }
     }
-
-    if (!formData.countryOfOrigin)
-      newErrors.countryOfOrigin = "Country of origin is required";
 
     // Optional URL validation
     if (
@@ -267,7 +263,7 @@ export function ExpressionOfInterestForm(): ReactElement {
             </p>
             <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg border border-gray-200 dark:border-gray-600 mb-8">
               <div className="flex items-center gap-3 mb-3">
-                <Sparkles className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                <CheckCircle2 className="h-5 w-5 text-gray-700 dark:text-gray-300" />
                 <p className="font-semibold text-gray-900 dark:text-white">
                   Next Steps
                 </p>
@@ -284,10 +280,10 @@ export function ExpressionOfInterestForm(): ReactElement {
                   email: "",
                   entityType: "",
                   businessPlan: "",
-                  applicantType: "",
                   applicantDescription: "",
                   countryOfOrigin: "",
                   onlinePresence: "",
+                  registerAsCSP: false,
                   cspContactName: "",
                   cspCompanyName: "",
                   cspUEN: "",
@@ -526,632 +522,621 @@ export function ExpressionOfInterestForm(): ReactElement {
             </div>
 
             <Separator className="bg-gray-200 dark:bg-gray-700" />
-            <div className="space-y-4">
-              <Label className="text-gray-900 dark:text-gray-100 font-medium">
-                Applicant Type *
-              </Label>
-              <RadioGroup
-                value={formData.applicantType}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    applicantType: value,
-                  }))
-                }
-                className="grid grid-cols-1 md:grid-cols-3 gap-4"
-              >
-                {/* <div className="flex items-center space-x-3 p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200">
-                  <RadioGroupItem
-                    value="individual"
-                    id="individual"
-                    className="border-gray-300 dark:border-gray-600"
-                  />
-                  <Label
-                    htmlFor="individual"
-                    className="cursor-pointer text-gray-900 dark:text-gray-100 flex items-center gap-2"
-                  >
-                    <User className="h-4 w-4 text-blue-500" />
-                    Individual
-                  </Label>
-                </div>
 
-                <div className="flex items-center space-x-3 p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200">
-                  <RadioGroupItem
-                    value="company"
-                    id="company"
-                    className="border-gray-300 dark:border-gray-600"
-                  />
-                  <Label
-                    htmlFor="company"
-                    className="cursor-pointer text-gray-900 dark:text-gray-100 flex items-center gap-2"
-                  >
-                    <Building2 className="h-4 w-4 text-green-500" />
-                    Company Official
-                  </Label>
-                </div> */}
-
-                <div className="flex items-center space-x-3 p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200">
-                  <RadioGroupItem
-                    value="csp"
-                    id="csp"
-                    className="border-gray-300 dark:border-gray-600"
-                  />
-                  <Label
-                    htmlFor="csp"
-                    className="cursor-pointer text-gray-900 dark:text-gray-100 flex items-center gap-2"
-                  >
-                    <Award className="h-4 w-4 text-purple-500" />
-                    CSP Provider
-                  </Label>
-                </div>
-              </RadioGroup>
-
-              {errors.applicantType && (
-                <p className="text-sm text-red-500 dark:text-red-400 flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" />
-                  {errors.applicantType}
-                </p>
-              )}
-            </div>
-            <div className="space-y-8">
-              <div className="space-y-6 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-700">
-                <div className="flex items-center gap-2 mb-4">
-                  <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-lg">
-                    Basic Information
-                  </h4>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="cspContactName"
-                      className="text-gray-900 dark:text-gray-100 font-medium"
-                    >
-                      Primary Contact Name and Position *
-                    </Label>
-                    <Input
-                      id="cspContactName"
-                      placeholder="Full name and position/title of primary contact person"
-                      value={formData.cspContactName}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          cspContactName: e.target.value,
-                        }))
-                      }
-                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                    />
-                    {errors.cspContactName && (
-                      <p className="text-sm text-red-500 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {errors.cspContactName}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="cspCompanyName"
-                      className="text-gray-900 dark:text-gray-100 font-medium"
-                    >
-                      Official Company Name *
-                    </Label>
-                    <Input
-                      id="cspCompanyName"
-                      placeholder="Company name as officially registered"
-                      value={formData.cspCompanyName}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          cspCompanyName: e.target.value,
-                        }))
-                      }
-                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                    />
-                    {errors.cspCompanyName && (
-                      <p className="text-sm text-red-500 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {errors.cspCompanyName}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="cspUEN"
-                      className="text-gray-900 dark:text-gray-100 font-medium"
-                    >
-                      UEN *
-                    </Label>
-                    <Input
-                      id="cspUEN"
-                      placeholder="Unique Entity Number"
-                      value={formData.cspUEN}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          cspUEN: e.target.value,
-                        }))
-                      }
-                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                    />
-                    {errors.cspUEN && (
-                      <p className="text-sm text-red-500 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {errors.cspUEN}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="cspEstablishmentYear"
-                      className="text-gray-900 dark:text-gray-100 font-medium"
-                    >
-                      Year Established *
-                    </Label>
-                    <Input
-                      id="cspEstablishmentYear"
-                      type="number"
-                      placeholder="YYYY"
-                      min="1900"
-                      max={new Date().getFullYear()}
-                      value={formData.cspEstablishmentYear}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          cspEstablishmentYear: e.target.value,
-                        }))
-                      }
-                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                    />
-                    {errors.cspEstablishmentYear && (
-                      <p className="text-sm text-red-500 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {errors.cspEstablishmentYear}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="cspWebsite"
-                    className="text-gray-900 dark:text-gray-100 font-medium"
-                  >
-                    Official Website Address *
-                  </Label>
-                  <Input
-                    id="cspWebsite"
-                    type="url"
-                    placeholder="https://www.yourcompany.com"
-                    value={formData.cspWebsite}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        cspWebsite: e.target.value,
-                      }))
-                    }
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                  />
-                  {errors.cspWebsite && (
-                    <p className="text-sm text-red-500 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" />
-                      {errors.cspWebsite}
-                    </p>
-                  )}
-                </div>
+            {/* CSP Registration Checkbox */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
+                <Award className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Additional Services
+                </h3>
               </div>
 
-              <div className="space-y-6 p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-700">
-                <div className="flex items-center gap-2 mb-4">
-                  <Award className="h-5 w-5 text-green-600 dark:text-green-400" />
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-lg">
-                    Background Information
-                  </h4>
-                </div>
+              <div className="flex items-center space-x-3 p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200">
+                <input
+                  type="checkbox"
+                  id="registerAsCSP"
+                  checked={formData.registerAsCSP}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      registerAsCSP: e.target.checked,
+                    }))
+                  }
+                  className="rounded border-gray-300 text-gray-600 focus:ring-gray-500"
+                />
+                <Label
+                  htmlFor="registerAsCSP"
+                  className="cursor-pointer text-gray-900 dark:text-gray-100 flex items-center gap-2"
+                >
+                  <Award className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                  Register as a CSP Provider
+                </Label>
+              </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="cspRQICount"
-                      className="text-gray-900 dark:text-gray-100 font-medium"
-                    >
-                      Number of RQIs Employed *
-                    </Label>
-                    <Input
-                      id="cspRQICount"
-                      type="number"
-                      min="0"
-                      placeholder="Total RQIs"
-                      value={formData.cspRQICount}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          cspRQICount: e.target.value,
-                        }))
-                      }
-                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400"
-                    />
-                    {errors.cspRQICount && (
-                      <p className="text-sm text-red-500 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {errors.cspRQICount}
-                      </p>
-                    )}
+            {/* CSP Provider Section - Only show when checkbox is checked */}
+            {formData.registerAsCSP && (
+              <>
+                <Separator className="bg-gray-200 dark:bg-gray-700" />
+
+                <div className="space-y-8">
+                  <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <Award className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                      CSP Provider Information
+                    </h3>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="cspExperiencedRQICount"
-                      className="text-gray-900 dark:text-gray-100 font-medium"
-                    >
-                      RQIs with 5+ Years Experience *
-                    </Label>
-                    <Input
-                      id="cspExperiencedRQICount"
-                      type="number"
-                      min="0"
-                      placeholder="Experienced RQIs"
-                      value={formData.cspExperiencedRQICount}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          cspExperiencedRQICount: e.target.value,
-                        }))
-                      }
-                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400"
-                    />
-                    {errors.cspExperiencedRQICount && (
-                      <p className="text-sm text-red-500 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {errors.cspExperiencedRQICount}
-                      </p>
-                    )}
-                  </div>
+                  {/* Basic Information */}
+                  <div className="space-y-6 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Building2 className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                      <h4 className="font-semibold text-gray-900 dark:text-white text-lg">
+                        Basic Information
+                      </h4>
+                    </div>
 
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="cspYearsQualified"
-                      className="text-gray-900 dark:text-gray-100 font-medium"
-                    >
-                      Years Qualified as CSP in Singapore *
-                    </Label>
-                    <Input
-                      id="cspYearsQualified"
-                      type="number"
-                      min="0"
-                      placeholder="Years"
-                      value={formData.cspYearsQualified}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          cspYearsQualified: e.target.value,
-                        }))
-                      }
-                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400"
-                    />
-                    {errors.cspYearsQualified && (
-                      <p className="text-sm text-red-500 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {errors.cspYearsQualified}
-                      </p>
-                    )}
-                  </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspContactName"
+                          className="text-gray-900 dark:text-gray-100 font-medium"
+                        >
+                          Primary Contact Name and Position *
+                        </Label>
+                        <Input
+                          id="cspContactName"
+                          placeholder="Full name and position/title of primary contact person"
+                          value={formData.cspContactName}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspContactName: e.target.value,
+                            }))
+                          }
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspContactName && (
+                          <p className="text-sm text-red-500 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {errors.cspContactName}
+                          </p>
+                        )}
+                      </div>
 
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="cspLicenseExpiry"
-                      className="text-gray-900 dark:text-gray-100 font-medium"
-                    >
-                      RFA License Expiry Date *
-                    </Label>
-                    <div className="relative">
-                      <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspCompanyName"
+                          className="text-gray-900 dark:text-gray-100 font-medium"
+                        >
+                          Official Company Name *
+                        </Label>
+                        <Input
+                          id="cspCompanyName"
+                          placeholder="Company name as officially registered"
+                          value={formData.cspCompanyName}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspCompanyName: e.target.value,
+                            }))
+                          }
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspCompanyName && (
+                          <p className="text-sm text-red-500 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {errors.cspCompanyName}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspUEN"
+                          className="text-gray-900 dark:text-gray-100 font-medium"
+                        >
+                          UEN *
+                        </Label>
+                        <Input
+                          id="cspUEN"
+                          placeholder="Unique Entity Number"
+                          value={formData.cspUEN}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspUEN: e.target.value,
+                            }))
+                          }
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspUEN && (
+                          <p className="text-sm text-red-500 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {errors.cspUEN}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspEstablishmentYear"
+                          className="text-gray-900 dark:text-gray-100 font-medium"
+                        >
+                          Year Established *
+                        </Label>
+                        <Input
+                          id="cspEstablishmentYear"
+                          type="number"
+                          placeholder="YYYY"
+                          min="1900"
+                          max={new Date().getFullYear()}
+                          value={formData.cspEstablishmentYear}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspEstablishmentYear: e.target.value,
+                            }))
+                          }
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspEstablishmentYear && (
+                          <p className="text-sm text-red-500 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {errors.cspEstablishmentYear}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="cspWebsite"
+                        className="text-gray-900 dark:text-gray-100 font-medium"
+                      >
+                        Official Website Address *
+                      </Label>
                       <Input
-                        id="cspLicenseExpiry"
-                        type="date"
-                        value={formData.cspLicenseExpiry}
+                        id="cspWebsite"
+                        type="url"
+                        placeholder="https://www.yourcompany.com"
+                        value={formData.cspWebsite}
                         onChange={(e) =>
                           setFormData((prev) => ({
                             ...prev,
-                            cspLicenseExpiry: e.target.value,
+                            cspWebsite: e.target.value,
                           }))
                         }
-                        className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 pl-10"
+                        className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                      />
+                      {errors.cspWebsite && (
+                        <p className="text-sm text-red-500 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.cspWebsite}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Background Information */}
+                  <div className="space-y-6 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Award className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                      <h4 className="font-semibold text-gray-900 dark:text-white text-lg">
+                        Background Information
+                      </h4>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspRQICount"
+                          className="text-gray-900 dark:text-gray-100 font-medium"
+                        >
+                          Number of RQIs Employed *
+                        </Label>
+                        <Input
+                          id="cspRQICount"
+                          type="number"
+                          min="0"
+                          placeholder="Total RQIs"
+                          value={formData.cspRQICount}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspRQICount: e.target.value,
+                            }))
+                          }
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspRQICount && (
+                          <p className="text-sm text-red-500 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {errors.cspRQICount}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspExperiencedRQICount"
+                          className="text-gray-900 dark:text-gray-100 font-medium"
+                        >
+                          RQIs with 5+ Years Experience *
+                        </Label>
+                        <Input
+                          id="cspExperiencedRQICount"
+                          type="number"
+                          min="0"
+                          placeholder="Experienced RQIs"
+                          value={formData.cspExperiencedRQICount}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspExperiencedRQICount: e.target.value,
+                            }))
+                          }
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspExperiencedRQICount && (
+                          <p className="text-sm text-red-500 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {errors.cspExperiencedRQICount}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspYearsQualified"
+                          className="text-gray-900 dark:text-gray-100 font-medium"
+                        >
+                          Years Qualified as CSP in Singapore *
+                        </Label>
+                        <Input
+                          id="cspYearsQualified"
+                          type="number"
+                          min="0"
+                          placeholder="Years"
+                          value={formData.cspYearsQualified}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              cspYearsQualified: e.target.value,
+                            }))
+                          }
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                        />
+                        {errors.cspYearsQualified && (
+                          <p className="text-sm text-red-500 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {errors.cspYearsQualified}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="cspLicenseExpiry"
+                          className="text-gray-900 dark:text-gray-100 font-medium"
+                        >
+                          RFA License Expiry Date *
+                        </Label>
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="cspLicenseExpiry"
+                            type="date"
+                            value={formData.cspLicenseExpiry}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                cspLicenseExpiry: e.target.value,
+                              }))
+                            }
+                            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 pl-10"
+                          />
+                        </div>
+                        {errors.cspLicenseExpiry && (
+                          <p className="text-sm text-red-500 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {errors.cspLicenseExpiry}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600">
+                      <FileUpload
+                        id="cspACRANotice"
+                        label="ACRA Notice Upload"
+                        description="Upload the notice from ACRA stating the validity of your RFA license and date of expiry"
+                        required={true}
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        onFileChange={(files) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspACRANotice: files,
+                          }))
+                        }
+                        error={errors.cspACRANotice}
                       />
                     </div>
-                    {errors.cspLicenseExpiry && (
-                      <p className="text-sm text-red-500 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {errors.cspLicenseExpiry}
+
+                    <div className="space-y-3">
+                      <Label className="text-gray-900 dark:text-gray-100 font-medium">
+                        ACRA Registered Filing Agent Status *
+                      </Label>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Is your company currently licensed or registered with
+                        ACRA as a &ldquo;registered filing agent&ldquo; as
+                        defined under section 31 of the Singapore ACRA Act?
                       </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="p-4 bg-white dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-600">
-                  <FileUpload
-                    id="cspACRANotice"
-                    label="ACRA Notice Upload"
-                    description="Upload the notice from ACRA stating the validity of your RFA license and date of expiry"
-                    required={true}
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    onFileChange={(files) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        cspACRANotice: files,
-                      }))
-                    }
-                    error={errors.cspACRANotice}
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <Label className="text-gray-900 dark:text-gray-100 font-medium">
-                    ACRA Registered Filing Agent Status *
-                  </Label>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Is your company currently licensed or registered with ACRA
-                    as a &ldquo;registered filing agent&ldquo; as defined under
-                    section 31 of the Singapore ACRA Act?
-                  </p>
-                  <RadioGroup
-                    value={formData.cspACRALicense}
-                    onValueChange={(value) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        cspACRALicense: value,
-                      }))
-                    }
-                    className="flex gap-6"
-                  >
-                    <div className="flex items-center space-x-2 p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                      <RadioGroupItem value="yes" id="acra-yes" />
-                      <Label htmlFor="acra-yes" className="cursor-pointer">
-                        Yes
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                      <RadioGroupItem value="no" id="acra-no" />
-                      <Label htmlFor="acra-no" className="cursor-pointer">
-                        No
-                      </Label>
-                    </div>
-                  </RadioGroup>
-                  {errors.cspACRALicense && (
-                    <p className="text-sm text-red-500 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" />
-                      {errors.cspACRALicense}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="cspServices"
-                    className="text-gray-900 dark:text-gray-100 font-medium"
-                  >
-                    Services Provided *
-                  </Label>
-                  <Textarea
-                    id="cspServices"
-                    placeholder="Please state all services provided by your company, eg CSP, registered office, accounting, tax, trust, private client, etc."
-                    value={formData.cspServices}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        cspServices: e.target.value,
-                      }))
-                    }
-                    rows={3}
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 resize-none"
-                  />
-                  {errors.cspServices && (
-                    <p className="text-sm text-red-500 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" />
-                      {errors.cspServices}
-                    </p>
-                  )}
-                </div>
-
-                <div className="p-4 bg-white dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-600">
-                  <FileUpload
-                    id="cspCompanyProfile"
-                    label="Company Profile and Services Listing"
-                    description="If you have a listing of your services and/or company profile, please upload"
-                    required={false}
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    multiple={true}
-                    onFileChange={(files) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        cspCompanyProfile: files,
-                      }))
-                    }
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <Label className="text-gray-900 dark:text-gray-100 font-medium">
-                    Client Types Served * (Select all that apply)
-                  </Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {cspClientTypes.map((clientType) => (
-                      <div
-                        key={clientType}
-                        className="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200"
+                      <RadioGroup
+                        value={formData.cspACRALicense}
+                        onValueChange={(value) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspACRALicense: value,
+                          }))
+                        }
+                        className="flex gap-6"
                       >
-                        <input
-                          type="checkbox"
-                          id={`client-${clientType}`}
-                          checked={formData.cspClientTypes.includes(clientType)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setFormData((prev) => ({
-                                ...prev,
-                                cspClientTypes: [
-                                  ...prev.cspClientTypes,
-                                  clientType,
-                                ],
-                              }));
-                            } else {
-                              setFormData((prev) => ({
-                                ...prev,
-                                cspClientTypes: prev.cspClientTypes.filter(
-                                  (type) => type !== clientType
-                                ),
-                              }));
-                            }
-                          }}
-                          className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                        />
-                        <Label
-                          htmlFor={`client-${clientType}`}
-                          className="text-sm cursor-pointer"
-                        >
-                          {clientType}
+                        <div className="flex items-center space-x-2 p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <RadioGroupItem value="yes" id="acra-yes" />
+                          <Label htmlFor="acra-yes" className="cursor-pointer">
+                            Yes
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2 p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <RadioGroupItem value="no" id="acra-no" />
+                          <Label htmlFor="acra-no" className="cursor-pointer">
+                            No
+                          </Label>
+                        </div>
+                      </RadioGroup>
+                      {errors.cspACRALicense && (
+                        <p className="text-sm text-red-500 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.cspACRALicense}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="cspServices"
+                        className="text-gray-900 dark:text-gray-100 font-medium"
+                      >
+                        Services Provided *
+                      </Label>
+                      <Textarea
+                        id="cspServices"
+                        placeholder="Please state all services provided by your company, eg CSP, registered office, accounting, tax, trust, private client, etc."
+                        value={formData.cspServices}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspServices: e.target.value,
+                          }))
+                        }
+                        rows={3}
+                        className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                      />
+                      {errors.cspServices && (
+                        <p className="text-sm text-red-500 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.cspServices}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600">
+                      <FileUpload
+                        id="cspCompanyProfile"
+                        label="Company Profile and Services Listing"
+                        description="If you have a listing of your services and/or company profile, please upload"
+                        required={false}
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        multiple={true}
+                        onFileChange={(files) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspCompanyProfile: files,
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="space-y-4">
+                        <Label className="text-gray-900 dark:text-gray-100 font-medium">
+                          Client Types Served * (Select all that apply)
                         </Label>
                       </div>
-                    ))}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {cspClientTypes.map((clientType) => (
+                          <div
+                            key={clientType}
+                            className="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200"
+                          >
+                            <input
+                              type="checkbox"
+                              id={`client-${clientType}`}
+                              checked={formData.cspClientTypes.includes(
+                                clientType
+                              )}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    cspClientTypes: [
+                                      ...prev.cspClientTypes,
+                                      clientType,
+                                    ],
+                                  }));
+                                } else {
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    cspClientTypes: prev.cspClientTypes.filter(
+                                      (type) => type !== clientType
+                                    ),
+                                  }));
+                                }
+                              }}
+                              className="rounded border-gray-300 text-gray-600 focus:ring-gray-500"
+                            />
+                            <Label
+                              htmlFor={`client-${clientType}`}
+                              className="text-sm cursor-pointer"
+                            >
+                              {clientType}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                      {errors.cspClientTypes && (
+                        <p className="text-sm text-red-500 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.cspClientTypes}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="cspSecurityFeatures"
+                        className="text-gray-900 dark:text-gray-100 font-medium flex items-center gap-2"
+                      >
+                        <Shield className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                        Security Features and Data Protection *
+                      </Label>
+                      <Textarea
+                        id="cspSecurityFeatures"
+                        placeholder="Please briefly describe the security features your company has in place to handle sensitive documents, and ensure data protection and client confidentiality"
+                        value={formData.cspSecurityFeatures}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspSecurityFeatures: e.target.value,
+                          }))
+                        }
+                        rows={4}
+                        className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                      />
+                      {errors.cspSecurityFeatures && (
+                        <p className="text-sm text-red-500 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.cspSecurityFeatures}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  {errors.cspClientTypes && (
-                    <p className="text-sm text-red-500 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" />
-                      {errors.cspClientTypes}
-                    </p>
-                  )}
-                </div>
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="cspSecurityFeatures"
-                    className="text-gray-900 dark:text-gray-100 font-medium flex items-center gap-2"
-                  >
-                    <Shield className="h-4 w-4 text-green-600" />
-                    Security Features and Data Protection *
-                  </Label>
-                  <Textarea
-                    id="cspSecurityFeatures"
-                    placeholder="Please briefly describe the security features your company has in place to handle sensitive documents, and ensure data protection and client confidentiality"
-                    value={formData.cspSecurityFeatures}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        cspSecurityFeatures: e.target.value,
-                      }))
-                    }
-                    rows={4}
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 resize-none"
-                  />
-                  {errors.cspSecurityFeatures && (
-                    <p className="text-sm text-red-500 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" />
-                      {errors.cspSecurityFeatures}
-                    </p>
-                  )}
-                </div>
-              </div>
+                  {/* Miscellaneous Information */}
+                  <div className="space-y-6 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-2 mb-4">
+                      <FileText className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                      <h4 className="font-semibold text-gray-900 dark:text-white text-lg">
+                        Miscellaneous Information
+                      </h4>
+                    </div>
 
-              <div className="space-y-6 p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl border border-purple-200 dark:border-purple-700">
-                <div className="flex items-center gap-2 mb-4">
-                  <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-lg">
-                    Miscellaneous Information
-                  </h4>
-                </div>
+                    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600">
+                      <FileUpload
+                        id="cspFeeSchedule"
+                        label="Current Fee Schedule"
+                        description="Please provide your current fee schedule for CSP services carried out by your company"
+                        required={true}
+                        accept=".pdf,.doc,.docx,.xls,.xlsx"
+                        onFileChange={(files) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspFeeSchedule: files,
+                          }))
+                        }
+                        error={errors.cspFeeSchedule}
+                      />
+                    </div>
 
-                <div className="p-4 bg-white dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-600">
-                  <FileUpload
-                    id="cspFeeSchedule"
-                    label="Current Fee Schedule"
-                    description="Please provide your current fee schedule for CSP services carried out by your company"
-                    required={true}
-                    accept=".pdf,.doc,.docx,.xls,.xlsx"
-                    onFileChange={(files) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        cspFeeSchedule: files,
-                      }))
-                    }
-                    error={errors.cspFeeSchedule}
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="cspDifferentiators"
+                        className="text-gray-900 dark:text-gray-100 font-medium"
+                      >
+                        Service Differentiators *
+                      </Label>
+                      <Textarea
+                        id="cspDifferentiators"
+                        placeholder="What differentiates your company's CSP services from others in the market?"
+                        value={formData.cspDifferentiators}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspDifferentiators: e.target.value,
+                          }))
+                        }
+                        rows={3}
+                        className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                      />
+                      {errors.cspDifferentiators && (
+                        <p className="text-sm text-red-500 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.cspDifferentiators}
+                        </p>
+                      )}
+                    </div>
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="cspDifferentiators"
-                    className="text-gray-900 dark:text-gray-100 font-medium"
-                  >
-                    Service Differentiators *
-                  </Label>
-                  <Textarea
-                    id="cspDifferentiators"
-                    placeholder="What differentiates your company's CSP services from others in the market?"
-                    value={formData.cspDifferentiators}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        cspDifferentiators: e.target.value,
-                      }))
-                    }
-                    rows={3}
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 resize-none"
-                  />
-                  {errors.cspDifferentiators && (
-                    <p className="text-sm text-red-500 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" />
-                      {errors.cspDifferentiators}
-                    </p>
-                  )}
-                </div>
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="cspAdditionalInfo"
+                        className="text-gray-900 dark:text-gray-100 font-medium"
+                      >
+                        Additional Supporting Information
+                      </Label>
+                      <Textarea
+                        id="cspAdditionalInfo"
+                        placeholder="Please provide any additional information that you believe may support your company's Expression of Interest"
+                        value={formData.cspAdditionalInfo}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspAdditionalInfo: e.target.value,
+                          }))
+                        }
+                        rows={3}
+                        className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                      />
+                    </div>
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="cspAdditionalInfo"
-                    className="text-gray-900 dark:text-gray-100 font-medium"
-                  >
-                    Additional Supporting Information
-                  </Label>
-                  <Textarea
-                    id="cspAdditionalInfo"
-                    placeholder="Please provide any additional information that you believe may support your company's Expression of Interest"
-                    value={formData.cspAdditionalInfo}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        cspAdditionalInfo: e.target.value,
-                      }))
-                    }
-                    rows={3}
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 resize-none"
-                  />
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="cspQuestions"
+                        className="text-gray-900 dark:text-gray-100 font-medium"
+                      >
+                        Questions about GMC/GCRO
+                      </Label>
+                      <Textarea
+                        id="cspQuestions"
+                        placeholder="Any questions about the GMC and/or for the GCRO?"
+                        value={formData.cspQuestions}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cspQuestions: e.target.value,
+                          }))
+                        }
+                        rows={3}
+                        className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                      />
+                    </div>
+                  </div>
                 </div>
+              </>
+            )}
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="cspQuestions"
-                    className="text-gray-900 dark:text-gray-100 font-medium"
-                  >
-                    Questions about GMC/GCRO
-                  </Label>
-                  <Textarea
-                    id="cspQuestions"
-                    placeholder="Any questions about the GMC and/or for the GCRO?"
-                    value={formData.cspQuestions}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        cspQuestions: e.target.value,
-                      }))
-                    }
-                    rows={3}
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 resize-none"
-                  />
-                </div>
-              </div>
-            </div>
+            <Separator className="bg-gray-200 dark:bg-gray-700" />
 
             {/* Online Presence Section */}
             <div className="space-y-6">
