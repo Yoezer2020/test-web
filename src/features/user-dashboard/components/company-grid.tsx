@@ -195,10 +195,7 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
               {/* Action Buttons */}
               <div className="flex gap-2">
                 {company.registrationStatus === "completed" ? (
-                  <Link
-                    href={`/user-dashboard/company-dashboard`}
-                    className="flex-1"
-                  >
+                  <Link href={`/company-dashboard`} className="flex-1">
                     <Button className="w-full bg-black hover:bg-gray-800 text-white font-semibold shadow-md transition-all duration-200">
                       <Eye className="h-4 w-4 mr-2" />
                       View Company
