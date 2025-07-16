@@ -976,10 +976,9 @@ export default function CompanyRegistrationPage() {
 
                     {formData.isTrademarkName === "yes" && (
                       <div className="mt-4">
-                        <Label>Upload Letter of Consent from Owner *</Label>
                         <FileUpload
                           id="consentLetter"
-                          label=""
+                          label="Upload Letter of Consent from Owner"
                           description="Upload the consent letter from the trademark/patent owner"
                           required={true}
                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
@@ -2149,9 +2148,7 @@ export default function CompanyRegistrationPage() {
                                   />
                                 </div>
                                 <div className="space-y-2">
-                                  <Label>
-                                    Authorized Person&ldquo;s Name *
-                                  </Label>
+                                  <Label>Authorized Person&apos;s Name *</Label>
                                   <Input
                                     placeholder="Enter authorized person's full name"
                                     value={subscriber.authorizedPerson}
@@ -2420,20 +2417,20 @@ export default function CompanyRegistrationPage() {
                       companies must have a registered office address in the
                       GMC. A registered office address refers to the place where
                       all communications and notices to the company may be
-                      addressed, and the place where the company&ldquo;s
-                      register and records are kept. The requirement for a
-                      registered office address will be waived for 12 months,
-                      commencing 1 May 2025 and until 30 April 2026 (Waiver
-                      Period). In the interim, it will be sufficient to provide
-                      the Gelephu Corporate Registration Office (GCRO) with an
-                      email address which can receive communications and notices
-                      addressed to the company. The company bears responsibility
-                      for all matters and/or documents which must be maintained
-                      at the registered office address during the Waiver Period.
-                      If the company is unable to provide the GCRO with a
-                      registered office address in GMC on/after 1 May 2026, the
-                      GCRO reserves the power to take enforcement action against
-                      the Company.
+                      addressed, and the place where the company&apos;s register
+                      and records are kept. The requirement for a registered
+                      office address will be waived for 12 months, commencing 1
+                      May 2025 and until 30 April 2026 (Waiver Period). In the
+                      interim, it will be sufficient to provide the Gelephu
+                      Corporate Registration Office (GCRO) with an email address
+                      which can receive communications and notices addressed to
+                      the company. The company bears responsibility for all
+                      matters and/or documents which must be maintained at the
+                      registered office address during the Waiver Period. If the
+                      company is unable to provide the GCRO with a registered
+                      office address in GMC on/after 1 May 2026, the GCRO
+                      reserves the power to take enforcement action against the
+                      Company.
                     </Label>
                     <Label className="text-gray-900 dark:text-gray-100 space-y-2">
                       Please select one option:
@@ -2443,12 +2440,13 @@ export default function CompanyRegistrationPage() {
                       onValueChange={(value) =>
                         updateFormData("registeredOfficeOption", value)
                       }
+                      className="mt-5"
                     >
                       <div className="flex items-start gap-3">
                         <RadioGroupItem value="gmcAddress" id="gmcAddress" />
                         <div className="flex-1 space-y-2">
                           <Label htmlFor="gmcAddress">
-                            The Company&ldquo;s address in the GMC is at:
+                            The Company&apos;s address in the GMC is at:
                           </Label>
                           <Input
                             placeholder="Enter GMC address"
@@ -2466,7 +2464,7 @@ export default function CompanyRegistrationPage() {
                         <RadioGroupItem value="waiverEmail" id="waiverEmail" />
                         <div className="flex-1 space-y-2">
                           <Label htmlFor="waiverEmail">
-                            During the Waiver Period, the Company&ldqquo;s email
+                            During the Waiver Period, the Company&apos;s email
                             address is:
                           </Label>
                           <Input
@@ -2539,7 +2537,7 @@ export default function CompanyRegistrationPage() {
             <section id="beneficial-owners" className="scroll-mt-8">
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  Information of the Applicant&ldqquo;s Beneficial Owner(s)
+                  Information of the Applicants Beneficial Owner(s)
                 </h2>
                 <p className="text-gray-600">
                   Detailed information about beneficial ownership (25% or more
@@ -2557,8 +2555,8 @@ export default function CompanyRegistrationPage() {
                   </CardHeader>
                   <CardContent className="text-sm text-blue-700 space-y-3">
                     <p>
-                      <strong>&ldqquo;Beneficial owner&ldqquo;</strong> in
-                      relation to a customer means:
+                      <strong>Beneficial owner</strong> in relation to a
+                      customer means:
                     </p>
                     <ul className="list-disc list-inside space-y-1 ml-4">
                       <li>
@@ -2620,7 +2618,7 @@ export default function CompanyRegistrationPage() {
                 <Card>
                   <CardHeader>
                     <CardTitle>
-                      Select the Applicant&ldqquo;s Beneficial Owner Type *
+                      Select the Applicant&apos;s Beneficial Owner Type *
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -2697,7 +2695,7 @@ export default function CompanyRegistrationPage() {
                       </CardHeader>
                       <CardContent className="text-sm text-green-700">
                         <p>
-                          As the Applicant&ldqquo;s beneficial owner is a
+                          As the Applicant&apos;s beneficial owner is a
                           corporation, please fill up this subsection.
                         </p>
                       </CardContent>
@@ -2809,7 +2807,7 @@ export default function CompanyRegistrationPage() {
                                 <CardContent className="space-y-4">
                                   <div className="space-y-2">
                                     <Label>
-                                      Entity&ldqquo;s registered office
+                                      Entity&apos;s registered office
                                       address/address of place of business *
                                     </Label>
                                     <Textarea
@@ -2921,7 +2919,7 @@ export default function CompanyRegistrationPage() {
                                   </div>
                                   Please upload the following documents for each
                                   beneficial owner:
-                                  <ul className="list-disc list-inside mt-2 space-y-1">
+                                  <ul className="text-md list-disc list-inside mt-2 space-y-1">
                                     <li>
                                       The original or copy of the certificate of
                                       incorporation
@@ -2983,7 +2981,7 @@ export default function CompanyRegistrationPage() {
                       </CardHeader>
                       <CardContent className="text-sm text-blue-700">
                         <p>
-                          As the Applicant&ldqquo;s beneficial owner is an
+                          As the Applicant&apos;s beneficial owner is an
                           individual, please fill up this subsection.
                         </p>
                       </CardContent>
@@ -3230,26 +3228,23 @@ export default function CompanyRegistrationPage() {
                                       Beneficial Owner
                                     </Label>
                                   </div>
-                                  <p className="text-sm text-gray-600">
-                                    Please upload the following documents for
-                                    each beneficial owner:
-                                    <ul className="list-disc list-inside mt-2 space-y-1">
-                                      <li>
-                                        The original or copy of the
-                                        individual&ldqquo;s Identity Card /
-                                        Passport
-                                      </li>
-                                      <li>
-                                        Proof of residential address (e.g.,
-                                        utilities or telephone bill)
-                                      </li>
-                                    </ul>
-                                    <span className="block mt-2 italic text-gray-500">
-                                      Note: If uploading copies, please provide
-                                      notarised copies or certified true copies
-                                      by an Advocate & Solicitor.
-                                    </span>
-                                  </p>
+                                  Please upload the following documents for each
+                                  beneficial owner:
+                                  <ul className="list-disc list-inside mt-2 space-y-1">
+                                    <li>
+                                      The original or copy of the
+                                      individual&apos;s Identity Card / Passport
+                                    </li>
+                                    <li>
+                                      Proof of residential address (e.g.,
+                                      utilities or telephone bill)
+                                    </li>
+                                  </ul>
+                                  <span className="block mt-2 italic text-gray-500">
+                                    Note: If uploading copies, please provide
+                                    notarised copies or certified true copies by
+                                    an Advocate & Solicitor.
+                                  </span>
                                   <FileUpload
                                     id={`individualBeneficialOwnerDocs-${index}`}
                                     label="Individual Documents *"
@@ -3954,7 +3949,7 @@ export default function CompanyRegistrationPage() {
                       Bank Account Assistance
                     </CardTitle>
                     <CardDescription>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 mt-5">
                         Digital Kidu (DK) Bank is the appointed bank which will
                         serve the needs of all corporate needs in the GMC. Once
                         your proposed company is incorporated, DK Bank will be
@@ -4092,8 +4087,8 @@ export default function CompanyRegistrationPage() {
                             <span className="font-medium text-red-600">*</span>{" "}
                             To DK Limited, I/We would like to open a corporate
                             account with your bank. I/We agree to abide by DK
-                            Limited&ldqquo;s rules and amendments, in effect
-                            from time to time.
+                            Limited&apos;s rules and amendments, in effect from
+                            time to time.
                           </Label>
                         </div>
 
@@ -4173,7 +4168,7 @@ export default function CompanyRegistrationPage() {
                                   />
                                   <Label
                                     htmlFor="operation-single"
-                                    className="cursor-pointer"
+                                    className="text-sm cursor-pointer"
                                   >
                                     Single: a single authorized signatory will
                                     both be the maker and checker of
@@ -4187,7 +4182,7 @@ export default function CompanyRegistrationPage() {
                                   />
                                   <Label
                                     htmlFor="operation-joint-and"
-                                    className="cursor-pointer"
+                                    className="text-sm cursor-pointer"
                                   >
                                     Joint (And): makers and checkers must be
                                     different authorized signatories, and all
@@ -4203,7 +4198,7 @@ export default function CompanyRegistrationPage() {
                                   />
                                   <Label
                                     htmlFor="operation-joint-any"
-                                    className="cursor-pointer"
+                                    className="text-sm cursor-pointer"
                                   >
                                     Joint (Any): any of the authorized
                                     signatories can be makers, checkers or both.
@@ -4241,7 +4236,7 @@ export default function CompanyRegistrationPage() {
                               <CardContent className="space-y-4">
                                 <div className="space-y-2">
                                   <Label>
-                                    Authorized Signatory&ldqquo;s Full Name *
+                                    Authorized Signatory&apos;s Full Name *
                                   </Label>
                                   <Input
                                     placeholder="Enter full name"
