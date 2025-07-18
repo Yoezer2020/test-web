@@ -12,6 +12,7 @@ import { UserDashboardHeader } from "@/features/user-dashboard/components/header
 import { UserDashboardSidebar } from "@/features/user-dashboard/components/sidebar";
 import { CompanyDashboardAlert } from "@/features/company-dashboard/components/dashboard-alert";
 import { PasswordUpdateModal } from "@/features/user-dashboard/components/password-update-modal";
+import Link from "next/link";
 
 interface Company {
   id: string;
@@ -131,10 +132,6 @@ export default function UserDashboard() {
     ).length,
   };
 
-  const handleStartNewCompany = () => {
-    console.log("Starting new company...");
-  };
-
   const handlePasswordUpdate = () => {
     console.log("Opening password update modal...");
     setShowPasswordModal(true);
@@ -193,7 +190,7 @@ export default function UserDashboard() {
         )}
 
         {/* Header */}
-        <UserDashboardHeader onStartNewCompany={handleStartNewCompany} />
+        <UserDashboardHeader />
 
         {/* Page Content */}
         <main className="flex-1 p-6 space-y-8">
@@ -210,13 +207,27 @@ export default function UserDashboard() {
                 Manage and monitor your company registrations
               </p>
             </div>
-
-            <Button className="bg-black hover:bg-gray-800 text-white font-semibold shadow-md w-fit">
-              <Plus className="h-4 w-4 mr-2" />
-              Register New Company
-            </Button>
+            <div className="flex flex-col lg:flex-row gap-2">
+              <Link
+                href={`/user-dashboard/register-company`}
+                className="flex-1"
+              >
+                <Button className="bg-black hover:bg-gray-800 text-white font-semibold shadow-md w-fit">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Register New Company
+                </Button>
+              </Link>
+              <Link
+                href={`/user-dashboard/register-company-branch`}
+                className="flex-1"
+              >
+                <Button className="bg-black hover:bg-gray-800 text-white font-semibold shadow-md w-fit">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Register New Company Branch
+                </Button>
+              </Link>
+            </div>
           </div>
-
           {/* Stats Cards */}
           <StatsCards stats={stats} />
 

@@ -5,13 +5,7 @@ import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-interface UserDashboardHeaderProps {
-  onStartNewCompany?: () => void;
-}
-
-export function UserDashboardHeader({
-  onStartNewCompany,
-}: UserDashboardHeaderProps) {
+export function UserDashboardHeader({}) {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -32,14 +26,6 @@ export function UserDashboardHeader({
         <div className="flex items-center space-x-4"></div>
 
         <div className="flex items-center space-x-3">
-          <Button
-            onClick={onStartNewCompany}
-            className="bg-black hover:bg-gray-800 text-white font-semibold shadow-md"
-            size="sm"
-          >
-            START A NEW COMPANY
-          </Button>
-
           <Button
             onClick={handleLogout}
             variant="ghost"

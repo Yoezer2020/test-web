@@ -162,7 +162,7 @@ interface FormData {
   companyBusinessRelationship: string;
 
   // Section 3: Subscriber Information
-  subscriberType: string;
+  subscriberTypes: string[];
   individualSubscribers: IndividualSubscriber[];
   corporateSubscribers: CorporateSubscriber[];
 
@@ -311,6 +311,8 @@ const createEmptyAuthorizedSignatory = (): AuthorizedSignatory => ({
 
 export default function CompanyRegistrationPage() {
   const [activeSection, setActiveSection] = useState("introduction");
+  // Add subscriberTypes to FormData type definition above this line
+  // interface FormData { ... subscriberTypes: string[]; ... }
   const [formData, setFormData] = useState<FormData>({
     // Company Details
     companyNames: ["", "", ""],
@@ -351,7 +353,7 @@ export default function CompanyRegistrationPage() {
     companyBusinessRelationship: "",
 
     // Subscriber Information
-    subscriberType: "",
+    subscriberTypes: [],
     individualSubscribers: [createEmptyIndividualSubscriber()],
     corporateSubscribers: [createEmptyCorporateSubscriber()],
 
@@ -420,6 +422,9 @@ export default function CompanyRegistrationPage() {
         // Ensure arrays exist with proper structure
         const draftWithDefaults = {
           ...parsedDraft,
+          subscriberTypes: Array.isArray(parsedDraft.subscriberTypes)
+            ? parsedDraft.subscriberTypes
+            : [], // Fallback to empty array
           individualSubscribers:
             parsedDraft.individualSubscribers?.length > 0
               ? parsedDraft.individualSubscribers
@@ -730,6 +735,35 @@ export default function CompanyRegistrationPage() {
       }));
     }
   };
+
+  useEffect(() => {
+    const totalShares = [
+      ...formData.individualSubscribers,
+      ...formData.corporateSubscribers,
+    ].reduce((sum, subscriber) => {
+      const shares = parseInt(subscriber.shares) || 0;
+      return sum + shares;
+    }, 0);
+
+    const initialShares = parseInt(formData.initialShares) || 0;
+
+    if (totalShares > initialShares) {
+      setErrors((prev) => ({
+        ...prev,
+        totalShares: `Total shares (${totalShares}) cannot exceed initial shares (${initialShares})`,
+      }));
+    } else {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.totalShares;
+        return newErrors;
+      });
+    }
+  }, [
+    formData.individualSubscribers,
+    formData.corporateSubscribers,
+    formData.initialShares,
+  ]);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -1718,24 +1752,40 @@ export default function CompanyRegistrationPage() {
                   <CardHeader>
                     <CardTitle>Subscriber Type</CardTitle>
                     <CardDescription>
-                      Are the subscribers individuals or corporations?
+                      Select the types of subscribers (at least one is required)
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <RadioGroup
-                      value={formData.subscriberType}
-                      onValueChange={(value) =>
-                        updateFormData(
-                          "subscriberType",
-                          value as "individual" | "corporation"
-                        )
-                      }
-                      className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                    >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="flex items-center space-x-3 p-6 border-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-                        <RadioGroupItem
-                          value="individual"
+                        <input
+                          type="checkbox"
                           id="subscriber-individual"
+                          checked={formData.subscriberTypes.includes(
+                            "individual"
+                          )}
+                          onChange={(e) => {
+                            const newTypes = e.target.checked
+                              ? [...formData.subscriberTypes, "individual"]
+                              : formData.subscriberTypes.filter(
+                                  (type) => type !== "individual"
+                                );
+                            if (newTypes.length === 0) {
+                              setErrors((prev) => ({
+                                ...prev,
+                                subscriberTypes:
+                                  "At least one subscriber type must be selected",
+                              }));
+                            } else {
+                              setErrors((prev) => {
+                                const newErrors = { ...prev };
+                                delete newErrors.subscriberTypes;
+                                return newErrors;
+                              });
+                            }
+                            updateFormData("subscriberTypes", newTypes);
+                          }}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                         />
                         <div className="flex items-center gap-3">
                           <User className="h-6 w-6 text-blue-600" />
@@ -1753,9 +1803,34 @@ export default function CompanyRegistrationPage() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-3 p-6 border-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-                        <RadioGroupItem
-                          value="corporation"
+                        <input
+                          type="checkbox"
                           id="subscriber-corporation"
+                          checked={formData.subscriberTypes.includes(
+                            "corporation"
+                          )}
+                          onChange={(e) => {
+                            const newTypes = e.target.checked
+                              ? [...formData.subscriberTypes, "corporation"]
+                              : formData.subscriberTypes.filter(
+                                  (type) => type !== "corporation"
+                                );
+                            if (newTypes.length === 0) {
+                              setErrors((prev) => ({
+                                ...prev,
+                                subscriberTypes:
+                                  "At least one subscriber type must be selected",
+                              }));
+                            } else {
+                              setErrors((prev) => {
+                                const newErrors = { ...prev };
+                                delete newErrors.subscriberTypes;
+                                return newErrors;
+                              });
+                            }
+                            updateFormData("subscriberTypes", newTypes);
+                          }}
+                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                         />
                         <div className="flex items-center gap-3">
                           <Building2 className="h-6 w-6 text-green-600" />
@@ -1772,12 +1847,26 @@ export default function CompanyRegistrationPage() {
                           </div>
                         </div>
                       </div>
-                    </RadioGroup>
+                    </div>
+                    {errors.subscriberTypes && (
+                      <p className="text-sm text-red-600 flex items-center gap-1 mt-4">
+                        <AlertCircle className="h-3 w-3" />
+                        {errors.subscriberTypes}
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
 
+                {/* Display error for total shares */}
+                {errors.totalShares && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{errors.totalShares}</AlertDescription>
+                  </Alert>
+                )}
+
                 {/* Individual Subscriber Details */}
-                {formData.subscriberType === "individual" && (
+                {formData.subscriberTypes.includes("individual") && (
                   <div className="space-y-8">
                     {formData.individualSubscribers.map((subscriber, index) => (
                       <Card key={index} className="border-2 border-blue-100">
@@ -2052,7 +2141,7 @@ export default function CompanyRegistrationPage() {
                 )}
 
                 {/* Corporate Subscriber Details */}
-                {formData.subscriberType === "corporation" && (
+                {formData.subscriberTypes.includes("corporation") && (
                   <div className="space-y-8">
                     {formData.corporateSubscribers.map((subscriber, index) => (
                       <Card key={index} className="border-2 border-green-100">
@@ -3333,7 +3422,7 @@ export default function CompanyRegistrationPage() {
                         person who has stepped down.
                       </li>
                     </ul>
-                    A &ldqquo;close associate&ldqquo; of a PEP means a natural
+                    A &ldquo;close associate&ldquo; of a PEP means a natural
                     person who is closely connected to a PEP either socially or
                     professionally, including:
                     <ul className="list-disc list-inside space-y-1 ml-4 mt-1">
@@ -3707,8 +3796,8 @@ export default function CompanyRegistrationPage() {
                         declare that the information provided is true and
                         correct. I agree to the terms of this form, including
                         any data protection issues (as stated at the front of
-                        the form). Your response of &ldqquo;yes&ldqquo; below
-                        acts as an e-signature as confirmation of the above.
+                        the form). Your response of &ldquo;yes&ldquo; below acts
+                        as an e-signature as confirmation of the above.
                       </Label>
                     </div>
 
@@ -3793,9 +3882,9 @@ export default function CompanyRegistrationPage() {
                       identification code in the format XnnnnnnnY, where:
                       <ul className="list-disc list-inside mt-2 space-y-1 text-sm text-gray-600">
                         <li>
-                          X represents the entity type (e.g., &ldqquo;A&ldqquo;
-                          for typical incorporated company, &ldqquo;F&ldqquo;
-                          for filing agent)
+                          X represents the entity type (e.g., &ldquo;A&ldquo;
+                          for typical incorporated company, &ldquo;F&ldquo; for
+                          filing agent)
                         </li>
                         <li>
                           The middle 7 digits (nnnnnnn) are pseudorandomly
@@ -3806,11 +3895,11 @@ export default function CompanyRegistrationPage() {
                       <p className="mt-2 text-sm text-gray-600">
                         For example, a typical incorporated company might have a
                         UEN like A3251384P. <br />
-                        Entities can choose a &ldqquo;Special UEN&ldqquo; to
+                        Entities can choose a &ldquo;Special UEN&ldquo; to
                         choose the middle 7 digits (nnnnnnn) by paying a $3,000
                         fee, with some restrictions on the number sequence to
-                        maintain system integrity. The &ldqquo;X&ldqquo; and
-                        &ldqquo;Y&ldqquo; cannot be changed and are generated
+                        maintain system integrity. The &ldquo;X&ldquo; and
+                        &ldquo;Y&ldquo; cannot be changed and are generated
                         based on the entity type and the chosen digits,
                         respectively.
                       </p>
@@ -3880,8 +3969,8 @@ export default function CompanyRegistrationPage() {
                             only), with the following restrictions:
                             <ul className="list-disc list-inside mt-2 space-y-1">
                               <li>
-                                The number cannot start with &ldqquo;000&ldqquo;
-                                or &ldqquo;001&ldqquo;
+                                The number cannot start with &ldquo;000&ldquo;
+                                or &ldquo;001&ldquo;
                               </li>
                               <li>
                                 The number cannot be made up of all repeated
@@ -3977,7 +4066,7 @@ export default function CompanyRegistrationPage() {
                       <p className="mt-2 text-sm text-gray-600">
                         The GCRO will disclose such personal data to Digital
                         Kidu Limited (and its affiliates, third party service
-                        providers and agents) (&ldqquo;DK&ldqquo;), for the sole
+                        providers and agents) (&ldquo;DK&ldquo;), for the sole
                         purposes of 1) opening a corporate bank account with DK,
                         and/or 2) opening individual bank accounts for the
                         directors associated with the proposed company.
@@ -3999,7 +4088,7 @@ export default function CompanyRegistrationPage() {
                         with the laws of the GMC.
                       </p>
                       <p className="mt-2 text-sm text-gray-600">
-                        By selecting &ldqquo;Yes&ldqquo; below, the Applicant
+                        By selecting &ldquo;Yes&ldquo; below, the Applicant
                         provides its consent pursuant to the data protection
                         notice above, and indemnifies the GCRO from any damages
                         or harm which may arise from the transfer above.
@@ -4187,7 +4276,7 @@ export default function CompanyRegistrationPage() {
                                     Joint (And): makers and checkers must be
                                     different authorized signatories, and all
                                     authorized signatories designated as
-                                    &ldqquo;checkers&ldqquo; must approve a
+                                    &ldquo;checkers&ldquo; must approve a
                                     transaction
                                   </Label>
                                 </div>
