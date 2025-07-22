@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -49,6 +48,16 @@ import {
   Calendar,
   Plus,
   Trash2,
+  Briefcase,
+  Scale,
+  DollarSign,
+  Home,
+  Award,
+  CheckCircle,
+  Upload,
+  FileCheck,
+  CreditCard,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 import { FileUpload } from "@/components/inputs/single-file-upload/file-upload-single";
@@ -531,8 +540,11 @@ export default function BranchRegistrationPage() {
               <div className="space-y-8">
                 {/* Company Type */}
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Company Type</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Building2 className="h-5 w-5 text-blue-600" />
+                      Company Type
+                    </CardTitle>
                     <CardDescription>
                       Please state the type of Company seeking to register a
                       branch in GMC.
@@ -573,8 +585,11 @@ export default function BranchRegistrationPage() {
 
                 {/* Foreign Company Name */}
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Company Name</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Building className="h-5 w-5 text-blue-600" />
+                      Company Name
+                    </CardTitle>
                     <CardDescription>
                       What is the name of the Foreign Company (FC) in place of
                       incorporation/registration or name of GMC Company (GC)
@@ -602,8 +617,11 @@ export default function BranchRegistrationPage() {
 
                 {/* Proposed Names */}
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Proposed Branch Names</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-blue-600" />
+                      Proposed Branch Names
+                    </CardTitle>
                     <CardDescription>
                       What is the proposed name of your company? Please provide
                       2 names.
@@ -657,8 +675,11 @@ export default function BranchRegistrationPage() {
 
                 {/* Trademark Question */}
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Trademark/Patent Information</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5 text-blue-600" />
+                      Trademark/Patent Information
+                    </CardTitle>
                     <CardDescription>
                       Is the proposed company name the trademark/patent name of
                       a product or the name of a company elsewhere?
@@ -722,8 +743,11 @@ export default function BranchRegistrationPage() {
               </div>
               <div className="space-y-8">
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Principal Activities</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Briefcase className="h-5 w-5 text-blue-600" />
+                      Principal Activities
+                    </CardTitle>
                     <CardDescription>
                       Please state the details of the principal activities of
                       the Branch. You may put up to 2 activities.
@@ -743,8 +767,11 @@ export default function BranchRegistrationPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card className="shadow-lg border-0 bg-white">
-                    <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                      <CardTitle>Country of Incorporation</CardTitle>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Globe className="h-5 w-5 text-blue-600" />
+                        Country of Incorporation
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
                       <Label
@@ -767,9 +794,13 @@ export default function BranchRegistrationPage() {
                       />
                     </CardContent>
                   </Card>
+
                   <Card className="shadow-lg border-0 bg-white">
-                    <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                      <CardTitle>Date of Incorporation</CardTitle>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Calendar className="h-5 w-5 text-blue-600" />
+                        Date of Incorporation
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
                       <Label
@@ -792,8 +823,11 @@ export default function BranchRegistrationPage() {
                 </div>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Legal Form</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Scale className="h-5 w-5 text-blue-600" />
+                      Legal Form
+                    </CardTitle>
                     <CardDescription>
                       Please state the legal form/entity of the FC/GC (e.g. is
                       it a company, corporation, corporate society, corporate
@@ -814,8 +848,11 @@ export default function BranchRegistrationPage() {
                 </Card>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Registered Countries</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-blue-600" />
+                      Registered Countries
+                    </CardTitle>
                     <CardDescription>
                       Please state the countries in which the FC/GC is
                       registered as a foreign company (if none, please type
@@ -835,8 +872,11 @@ export default function BranchRegistrationPage() {
                 </Card>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Share Capital</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5 text-blue-600" />
+                      Share Capital
+                    </CardTitle>
                     <CardDescription>
                       Does the foreign company have a share capital?
                     </CardDescription>
@@ -872,8 +912,11 @@ export default function BranchRegistrationPage() {
                 </Card>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Registered Office Address</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Home className="h-5 w-5 text-blue-600" />
+                      Registered Office Address
+                    </CardTitle>
                     <CardDescription>
                       Please state the registered office address of the FC/GC in
                       place of incorporation.
@@ -896,8 +939,11 @@ export default function BranchRegistrationPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card className="shadow-lg border-0 bg-white">
-                    <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                      <CardTitle>Certificate Number</CardTitle>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Award className="h-5 w-5 text-blue-600" />
+                        Certificate Number
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
                       <Label
@@ -917,9 +963,13 @@ export default function BranchRegistrationPage() {
                       />
                     </CardContent>
                   </Card>
+
                   <Card className="shadow-lg border-0 bg-white">
-                    <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                      <CardTitle>Certifying Authority</CardTitle>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <CheckCircle className="h-5 w-5 text-blue-600" />
+                        Certifying Authority
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
                       <Label
@@ -942,8 +992,11 @@ export default function BranchRegistrationPage() {
                 </div>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Certification Date</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5 text-blue-600" />
+                      Certification Date
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="p-6">
                     <Label
@@ -965,8 +1018,11 @@ export default function BranchRegistrationPage() {
                 </Card>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Incorporation Documents</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Upload className="h-5 w-5 text-blue-600" />
+                      Incorporation Documents
+                    </CardTitle>
                     <CardDescription>
                       Please upload: (1) a copy of the Certificate of
                       Incorporation or Registration of the FC / GC and/or (2) a
@@ -1005,8 +1061,11 @@ export default function BranchRegistrationPage() {
               </div>
               <div className="space-y-8">
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Constitutive Document Type</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-blue-600" />
+                      Constitutive Document Type
+                    </CardTitle>
                     <CardDescription>
                       State the type of constitutive document of the FC /GC
                     </CardDescription>
@@ -1037,8 +1096,11 @@ export default function BranchRegistrationPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card className="shadow-lg border-0 bg-white">
-                    <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                      <CardTitle>Charter Certifying Authority</CardTitle>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <CheckCircle className="h-5 w-5 text-blue-600" />
+                        Charter Certifying Authority
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
                       <Label
@@ -1062,9 +1124,13 @@ export default function BranchRegistrationPage() {
                       />
                     </CardContent>
                   </Card>
+
                   <Card className="shadow-lg border-0 bg-white">
-                    <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                      <CardTitle>Charter Certification Date</CardTitle>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Calendar className="h-5 w-5 text-blue-600" />
+                        Charter Certification Date
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
                       <Label
@@ -1090,8 +1156,11 @@ export default function BranchRegistrationPage() {
                 </div>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Constitutive Documents</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Upload className="h-5 w-5 text-blue-600" />
+                      Constitutive Documents
+                    </CardTitle>
                     <CardDescription>
                       Please upload the Certified Copy of Charter / Statute /
                       Memorandum and Articles / Other Constitutional
@@ -1117,8 +1186,9 @@ export default function BranchRegistrationPage() {
                 </Card>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5 text-blue-600" />
                       Directors and Beneficial Owners Documents
                     </CardTitle>
                     <CardDescription>
@@ -1154,8 +1224,11 @@ export default function BranchRegistrationPage() {
                 <p className="text-gray-600">Financial Year End of FC/ GC</p>
               </div>
               <Card className="shadow-lg border-0 bg-white">
-                <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                  <CardTitle>Financial Year End</CardTitle>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="h-5 w-5 text-blue-600" />
+                    Financial Year End
+                  </CardTitle>
                   <CardDescription>
                     Please state the FC/GC&apos;s financial year end date (in
                     DD/MM format)
@@ -1227,8 +1300,11 @@ export default function BranchRegistrationPage() {
                 </Card>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Consent Statement</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileCheck className="h-5 w-5 text-blue-600" />
+                      Consent Statement
+                    </CardTitle>
                     <CardDescription>
                       Please upload a consent statement by or on behalf of the
                       FC / GC in the prescribed form confirming that each of its
@@ -1253,8 +1329,11 @@ export default function BranchRegistrationPage() {
                 </Card>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Representative Passports</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CreditCard className="h-5 w-5 text-blue-600" />
+                      Representative Passports
+                    </CardTitle>
                     <CardDescription>
                       Please upload a certified true copy (certified by a Notary
                       Public or Advocate & Solicitor) of a passport or identity
@@ -1288,8 +1367,11 @@ export default function BranchRegistrationPage() {
                 <p className="text-gray-600">This section is compulsory.</p>
               </div>
               <Card className="shadow-lg border-0 bg-white">
-                <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                  <CardTitle>Representative 1 Details</CardTitle>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5 text-blue-600" />
+                    Representative 1 Details
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 space-y-6">
                   <div>
@@ -1521,8 +1603,11 @@ export default function BranchRegistrationPage() {
                   </p>
                 </div>
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Representative 2 Details</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <User className="h-5 w-5 text-blue-600" />
+                      Representative 2 Details
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="p-6 space-y-6">
                     <div>
@@ -1728,10 +1813,11 @@ export default function BranchRegistrationPage() {
                 {/* Directors */}
                 {formData.directors.map((director, index) => (
                   <Card key={index} className="shadow-lg border-0 bg-white">
-                    <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
+                    <CardHeader>
                       <div className="flex items-center justify-between">
                         <div>
-                          <CardTitle>
+                          <CardTitle className="flex items-center gap-2">
+                            <Users className="h-5 w-5 text-blue-600" />
                             Director {index + 1}
                             {index === 0 && " (Required)"}
                           </CardTitle>
@@ -1964,8 +2050,11 @@ export default function BranchRegistrationPage() {
                 </Card>
 
                 <Card className="shadow-lg border-0 bg-white">
-                  <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                    <CardTitle>Registered Office Availability</CardTitle>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-blue-600" />
+                      Registered Office Availability
+                    </CardTitle>
                     <CardDescription>
                       Are the details of the registered branch office address in
                       GMC and working hours available?
@@ -2003,8 +2092,9 @@ export default function BranchRegistrationPage() {
 
                 {formData.hasRegisteredOffice === "yes" && (
                   <Card className="shadow-lg border-0 bg-white">
-                    <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                      <CardTitle>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Home className="h-5 w-5 text-blue-600" />
                         Registered Office Address and Working Hours
                       </CardTitle>
                       <CardDescription>
@@ -2072,8 +2162,9 @@ export default function BranchRegistrationPage() {
 
                 {formData.hasRegisteredOffice === "no" && (
                   <Card className="shadow-lg border-0 bg-white">
-                    <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                      <CardTitle>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Home className="h-5 w-5 text-blue-600" />
                         Registered Office Address and Working Hours
                       </CardTitle>
                       <CardDescription>
@@ -2123,8 +2214,11 @@ export default function BranchRegistrationPage() {
                 </p>
               </div>
               <Card className="shadow-lg border-0 bg-white">
-                <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                  <CardTitle>Declaration Details</CardTitle>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-blue-600" />
+                    Declaration Details
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 space-y-6">
                   <div>
@@ -2226,8 +2320,11 @@ export default function BranchRegistrationPage() {
                 </p>
               </div>
               <Card className="shadow-lg border-0 bg-white">
-                <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
-                  <CardTitle>Your Experience</CardTitle>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="h-5 w-5 text-blue-600" />
+                    Your Experience
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 space-y-6">
                   <div>
