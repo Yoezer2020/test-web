@@ -1,7 +1,7 @@
 "use client";
 import { SimpleImage } from "@/components/inputs/simple-image/simple-image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Home, Settings, Mail, FileText } from "lucide-react";
+import { Home } from "lucide-react";
 
 interface SidebarProps {
   activeItem?: string;
@@ -15,9 +15,9 @@ interface SidebarProps {
 
 const sidebarItems = [
   { id: "dashboard", label: "Dashboard", icon: Home },
-  { id: "settings", label: "Settings", icon: Settings },
-  { id: "mailbox", label: "Virtual Mailbox", icon: Mail },
-  { id: "orders", label: "All Orders/Receipts", icon: FileText },
+  // { id: "settings", label: "Settings", icon: Settings },
+  // { id: "mailbox", label: "Virtual Mailbox", icon: Mail },
+  // { id: "orders", label: "All Orders/Receipts", icon: FileText },
 ];
 
 export function UserDashboardSidebar({

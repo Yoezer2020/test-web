@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { CompanyGrid } from "@/features/user-dashboard/components/company-grid";
 import { SearchFilter } from "@/features/user-dashboard/components/search-filter";
-import { StatsCards } from "@/features/user-dashboard/components/stats-card";
-import { ActionItems } from "@/features/user-dashboard/components/action-items";
 import { UserDashboardHeader } from "@/features/user-dashboard/components/header";
 import { UserDashboardSidebar } from "@/features/user-dashboard/components/sidebar";
 import { CompanyDashboardAlert } from "@/features/company-dashboard/components/dashboard-alert";
@@ -121,16 +119,16 @@ export default function UserDashboard() {
     return matchesSearch && matchesFilter;
   });
 
-  const stats = {
-    total: mockCompanies.length,
-    completed: mockCompanies.filter((c) => c.registrationStatus === "completed")
-      .length,
-    pending: mockCompanies.filter((c) => c.registrationStatus === "pending")
-      .length,
-    incomplete: mockCompanies.filter(
-      (c) => c.registrationStatus === "incomplete"
-    ).length,
-  };
+  // const stats = {
+  //   total: mockCompanies.length,
+  //   completed: mockCompanies.filter((c) => c.registrationStatus === "completed")
+  //     .length,
+  //   pending: mockCompanies.filter((c) => c.registrationStatus === "pending")
+  //     .length,
+  //   incomplete: mockCompanies.filter(
+  //     (c) => c.registrationStatus === "incomplete"
+  //   ).length,
+  // };
 
   const handlePasswordUpdate = () => {
     console.log("Opening password update modal...");
@@ -195,24 +193,24 @@ export default function UserDashboard() {
         {/* Page Content */}
         <main className="flex-1 p-6 space-y-8">
           {/* Action Items */}
-          <ActionItems />
+          {/* <ActionItems /> */}
 
           {/* Header Section */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div>
+            {/* <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 My Companies
               </h1>
               <p className="text-gray-600 font-medium">
                 Manage and monitor your company registrations
               </p>
-            </div>
+            </div> */}
             <div className="flex flex-col lg:flex-row gap-2">
               <Link
                 href={`/user-dashboard/register-company`}
                 className="flex-1"
               >
-                <Button className="bg-black hover:bg-gray-800 text-white font-semibold shadow-md w-fit">
+                <Button className="bg-gray-900 hover:bg-gray-700 text-white font-semibold shadow-md w-fit">
                   <Plus className="h-4 w-4 mr-2" />
                   Register New Company
                 </Button>
@@ -221,7 +219,7 @@ export default function UserDashboard() {
                 href={`/user-dashboard/register-company-branch`}
                 className="flex-1"
               >
-                <Button className="bg-black hover:bg-gray-800 text-white font-semibold shadow-md w-fit">
+                <Button className="bg-blue-900 hover:bg-blue-400 text-white font-semibold shadow-md w-fit">
                   <Plus className="h-4 w-4 mr-2" />
                   Register New Company Branch
                 </Button>
@@ -229,7 +227,7 @@ export default function UserDashboard() {
             </div>
           </div>
           {/* Stats Cards */}
-          <StatsCards stats={stats} />
+          {/* <StatsCards stats={stats} /> */}
 
           {/* Search and Filter Section */}
           <SearchFilter
