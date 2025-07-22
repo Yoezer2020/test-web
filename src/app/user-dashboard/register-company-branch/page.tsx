@@ -361,7 +361,7 @@ export default function BranchRegistrationPage() {
     <>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex">
         {/* Sidebar */}
-        <div className="w-80 bg-white shadow-xl border-r border-gray-200 fixed h-full overflow-y-auto">
+        <div className="w-80 bg-white shadow-xl border-r border-gray-200 fixed h-full overflow-y-auto hidden sm:block">
           <div className="p-6 border-b border-gray-200 bg-gradient-to-r ">
             <Link
               href="/user-dashboard"
@@ -443,7 +443,7 @@ export default function BranchRegistrationPage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 ml-80">
+        <div className="flex-1 sm:ml-80">
           <div className="max-w-4xl mx-auto p-8 space-y-12">
             {/* Introduction Section */}
             <section id="introduction" className="scroll-mt-8">
