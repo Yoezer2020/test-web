@@ -27,13 +27,13 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { id: "dashboard", label: "Dashboard", icon: Home, href: "#" },
-  { id: "applications", label: "My Applications", icon: FileText, href: "#" },
-  { id: "team", label: "Team Management", icon: Users, href: "#" },
+  // { id: "dashboard", label: "Dashboard", icon: Home, href: "#" },
+  // { id: "applications", label: "My Applications", icon: FileText, href: "#" },
+  // { id: "team", label: "Team Management", icon: Users, href: "#" },
   { id: "documents", label: "Document Center", icon: FolderOpen, href: "#" },
   { id: "profile", label: "Company Profile", icon: Building2, href: "#" },
-  { id: "compliance", label: "Compliance & Updates", icon: Shield, href: "#" },
-  { id: "support", label: "Support", icon: HelpCircle, href: "#" },
+  // { id: "compliance", label: "Compliance & Updates", icon: Shield, href: "#" },
+  // { id: "support", label: "Support", icon: HelpCircle, href: "#" },
   { id: "settings", label: "Account Settings", icon: Settings, href: "#" },
 ];
 
