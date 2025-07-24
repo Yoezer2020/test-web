@@ -3,19 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Home,
-  FileText,
-  Users,
-  FolderOpen,
-  Building2,
-  Shield,
-  HelpCircle,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-} from "lucide-react";
+import { FolderOpen, Building2, Settings, LogOut, Menu, X } from "lucide-react";
 
 interface SidebarProps {
   activeItem?: string;

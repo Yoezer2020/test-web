@@ -3,6 +3,7 @@ import type React from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeConfigProvider } from "@/components/active-theme";
+import { Providers } from "@/redux/Provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +30,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeConfigProvider>{children}</ThemeConfigProvider>
+        <ThemeConfigProvider>
+          {" "}
+          <Providers>{children}</Providers>
+        </ThemeConfigProvider>
       </body>
     </html>
   );
