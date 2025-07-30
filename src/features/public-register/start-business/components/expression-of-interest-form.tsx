@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactElement } from "react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { useForm, useWatch, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -43,9 +43,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -54,7 +52,6 @@ import {
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
 import { FileUpload } from "@/components/inputs/single-file-upload/file-upload-single";
 import { Label } from "@/components/ui/label";
 import { submitExpressionOfInterest } from "@/redux/slice/expression-of-interest/expressionInterestSlice";
@@ -72,6 +69,36 @@ const cspClientTypes = [
   "Financial Institutions",
   "Family Offices",
 ] as const;
+
+// Define default values with proper types
+const defaultValues: z.infer<typeof eoiSchema> = {
+  email: "",
+  entityType: "",
+  businessPlan: "",
+  applicantDescription: "",
+  countryOfOrigin: "",
+  onlinePresence: "",
+  registerAsCSP: false,
+  cspContactName: "",
+  cspCompanyName: "",
+  cspUEN: "",
+  cspEstablishmentYear: "",
+  cspWebsite: "",
+  cspRQICount: "",
+  cspExperiencedRQICount: "",
+  cspYearsQualified: "",
+  cspLicenseExpiry: "",
+  cspACRALicense: false,
+  cspServices: "",
+  cspClientTypes: [],
+  cspSecurityFeatures: "",
+  cspDifferentiators: "",
+  cspAdditionalInfo: "",
+  cspQuestions: "",
+  cspACRANotice: [],
+  cspCompanyProfile: [],
+  cspFeeSchedule: [],
+};
 
 // Base schema for common fields
 const baseSchema = z.object({
@@ -152,7 +179,7 @@ const cspSchema = z.object({
   cspSecurityFeatures: z
     .string()
     .min(1, "Security features description is required"),
-  cspDifferentiators: z.string().min(1, "Service differentiators are required"),
+  cspDifferentiators: z.string().min(1, "CSP differentiators are required"),
   cspAdditionalInfo: z.string().optional(),
   cspQuestions: z.string().optional(),
   cspACRANotice: z.any().refine((files) => files?.length > 0, {
@@ -185,131 +212,143 @@ export function ExpressionOfInterestForm(): ReactElement {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [formDataToSubmit, setFormDataToSubmit] = useState<FormData | null>(
+    null
+  );
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const form = useForm<FormData>({
+  const methods = useForm<FormData>({
     resolver: zodResolver(eoiSchema),
-    defaultValues: {
-      email: "",
-      entityType: "",
-      businessPlan: "",
-      applicantDescription: "",
-      countryOfOrigin: "",
-      onlinePresence: "",
-      registerAsCSP: false,
-      cspContactName: "",
-      cspCompanyName: "",
-      cspUEN: "",
-      cspEstablishmentYear: "",
-      cspWebsite: "",
-      cspRQICount: "",
-      cspExperiencedRQICount: "",
-      cspYearsQualified: "",
-      cspLicenseExpiry: "",
-      cspACRALicense: false,
-      cspServices: "",
-      cspClientTypes: [],
-      cspSecurityFeatures: "",
-      cspDifferentiators: "",
-      cspAdditionalInfo: "",
-      cspQuestions: "",
-      cspACRANotice: [],
-      cspCompanyProfile: [],
-      cspFeeSchedule: [],
-    },
+    defaultValues,
+    mode: "onChange",
   });
 
-  const watchRegisterAsCSP = form.watch("registerAsCSP");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+    reset,
+  } = methods;
 
-  // Rename to avoid conflict with React Hook Form's handleSubmit
-  const onSubmit = async () => {
+  const watchRegisterAsCSP = useWatch({ control, name: "registerAsCSP" });
+
+  // Handle form submission
+  const onSubmit = async (data: FormData) => {
+    setFormDataToSubmit(data);
     setShowConfirmation(true);
   };
 
+  // Handle confirmation from dialog
   const confirmSubmission = async () => {
+    if (!formDataToSubmit) return;
+
     setShowConfirmation(false);
     setIsSubmitting(true);
+
     function isCSPFormData(
       data: FormData
     ): data is FormData & { registerAsCSP: true } & z.infer<typeof cspSchema> {
       return data.registerAsCSP === true;
     }
 
-    try {
-      const data = form.getValues();
-      const basicEntity = {
-        email: data?.email,
-        entityType: data?.entityType,
-        businessPlans: data?.businessPlan,
-        applicantType: "applicant",
-        companyInformation: data?.applicantDescription,
-        country: data?.countryOfOrigin,
-        onlinePresence: data?.onlinePresence,
-      };
+    const basicEntity = {
+      email: formDataToSubmit.email,
+      entityType: formDataToSubmit.entityType,
+      businessPlans: formDataToSubmit.businessPlan,
+      applicantType: "applicant",
+      companyInformation: formDataToSubmit.applicantDescription,
+      country: formDataToSubmit.countryOfOrigin,
+      onlinePresence: formDataToSubmit.onlinePresence,
+    };
 
-      const eoiAPIResponse = await dispatch(
+    try {
+      const eoiResponse = await dispatch(
         submitExpressionOfInterest(basicEntity)
       ).unwrap();
-      if (eoiAPIResponse) {
-        toast.success("Application submitted successfully!", {
-          description: "You will receive a confirmation email shortly.",
-        });
-        setSubmitSuccess(true);
-      }
 
-      if (isCSPFormData(data) && eoiAPIResponse) {
-        console.log("csp data entity created");
+      if (isCSPFormData(formDataToSubmit)) {
         const cspEntity = {
-          eoiId: eoiAPIResponse?.id,
-          contactDetails: data?.cspContactName,
-          companyName: data?.cspCompanyName,
-          UEN: data?.cspUEN,
-          yearEstablished: data?.cspEstablishmentYear,
-          website: data?.cspWebsite,
-          numberOfRqi: data?.cspRQICount,
-          fiveYearsRoi: data?.cspExperiencedRQICount,
-          qualifiedYears: data?.cspYearsQualified,
-          rfaExpiryDate: data?.cspLicenseExpiry,
-          registeredFillingAgent: data?.cspACRALicense,
-          servicesProvided: data?.cspServices,
-          clientTypeServed: data?.cspClientTypes,
-          security: data?.cspSecurityFeatures,
-          serviceDifferentiators: data?.cspDifferentiators,
-          questions: data?.cspQuestions,
+          eoiId: eoiResponse.id,
+          contactDetails: formDataToSubmit.cspContactName,
+          companyName: formDataToSubmit.cspCompanyName,
+          UEN: formDataToSubmit.cspUEN,
+          yearEstablished: formDataToSubmit.cspEstablishmentYear,
+          website: formDataToSubmit.cspWebsite,
+          numberOfRqi: formDataToSubmit.cspRQICount,
+          fiveYearsRoi: formDataToSubmit.cspExperiencedRQICount,
+          qualifiedYears: formDataToSubmit.cspYearsQualified,
+          rfaExpiryDate: formDataToSubmit.cspLicenseExpiry,
+          registeredFillingAgent: formDataToSubmit.cspACRALicense,
+          servicesProvided: formDataToSubmit.cspServices,
+          clientTypeServed: formDataToSubmit.cspClientTypes,
+          security: formDataToSubmit.cspSecurityFeatures,
+          serviceDifferentiators: formDataToSubmit.cspDifferentiators,
+          questions: formDataToSubmit.cspQuestions,
         };
-        const cspAPIResponse = await dispatch(
-          submitCSPExpressionOfInterest(cspEntity)
-        ).unwrap();
-        if (cspAPIResponse) {
-          const files = new FormData();
-          files.append("acra", data.cspACRANotice[0]);
-          files.append("companyProfile", data.cspCompanyProfile[0]);
-          files.append("currentFeeSchedule", data.cspFeeSchedule[0]);
 
-          const cspFileUploaded = await dispatch(
-            uploadCSPDetails({ id: cspAPIResponse.id, fileData: files })
+        try {
+          const cspResponse = await dispatch(
+            submitCSPExpressionOfInterest(cspEntity)
           ).unwrap();
-          if (cspFileUploaded) {
-            console.log("CPI files uploaded");
 
-            toast.success("CSP details submitted successfully!", {
-              description: "You will receive a confirmation email shortly.",
-            });
-          } else {
-            toast.error("Failed to upload CSP files.");
+          const files = new FormData();
+          files.append("acra", formDataToSubmit.cspACRANotice[0]);
+
+          if (formDataToSubmit.cspCompanyProfile?.[0]) {
+            files.append(
+              "companyProfile",
+              formDataToSubmit.cspCompanyProfile[0]
+            );
           }
+
+          files.append(
+            "currentFeeSchedule",
+            formDataToSubmit.cspFeeSchedule[0]
+          );
+
+          try {
+            await dispatch(
+              uploadCSPDetails({ id: cspResponse.id, fileData: files })
+            ).unwrap();
+
+            setSubmitSuccess(true);
+            setIsSubmitting(false);
+            setFormDataToSubmit(null);
+          } catch (err: any) {
+            setErrorMessage(
+              err?.response?.data?.message ??
+                "Failed to upload CSP supporting documents"
+            );
+            setIsSubmitting(false);
+          }
+        } catch (err: any) {
+          setErrorMessage(
+            err?.response?.data?.message ??
+              "Failed to submit Expression of Interest for CSP"
+          );
+          setIsSubmitting(false);
         }
       } else {
+        // Non-CSP submission is successful
+        setSubmitSuccess(true);
+        setIsSubmitting(false);
+        setFormDataToSubmit(null);
       }
-    } catch (error) {
-      console.error("Submission error:", error);
-      toast.error("Submission failed", {
-        description:
-          "Please try again or contact support if the problem persists.",
-      });
-    } finally {
+    } catch (err: any) {
+      setErrorMessage(
+        err?.response?.data?.message ??
+          "Failed to submit Expression of Interest"
+      );
       setIsSubmitting(false);
     }
   };
+
+  // Reset form when submission is successful
+  useEffect(() => {
+    if (submitSuccess) {
+      reset(defaultValues);
+    }
+  }, [submitSuccess, reset]);
 
   if (submitSuccess) {
     return (
@@ -341,7 +380,7 @@ export function ExpressionOfInterestForm(): ReactElement {
             <Button
               onClick={() => {
                 setSubmitSuccess(false);
-                form.reset();
+                reset(defaultValues);
               }}
               variant="outline"
               className="mt-6 px-8 py-3 text-lg border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -374,8 +413,16 @@ export function ExpressionOfInterestForm(): ReactElement {
           </div>
         </CardHeader>
         <CardContent className="p-8">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+              {errors.root && (
+                <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-700">
+                  <p className="text-red-600 dark:text-red-300">
+                    {errors.root.message}
+                  </p>
+                </div>
+              )}
+
               {/* Basic Information Section */}
               <div className="space-y-6">
                 <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
@@ -386,7 +433,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
-                    control={form.control}
+                    control={control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
@@ -397,7 +444,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                           <Input
                             type="email"
                             placeholder="your.email@example.com"
-                            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                            className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
                             {...field}
                           />
                         </FormControl>
@@ -406,7 +453,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                     )}
                   />
                   <FormField
-                    control={form.control}
+                    control={control}
                     name="entityType"
                     render={({ field }) => (
                       <FormItem>
@@ -418,7 +465,9 @@ export function ExpressionOfInterestForm(): ReactElement {
                           value={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
+                            <SelectTrigger
+                              className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
+                            >
                               <SelectValue placeholder="Select entity type" />
                             </SelectTrigger>
                           </FormControl>
@@ -449,7 +498,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                   </h3>
                 </div>
                 <FormField
-                  control={form.control}
+                  control={control}
                   name="applicantDescription"
                   render={({ field }) => (
                     <FormItem>
@@ -460,7 +509,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         <Textarea
                           placeholder="Please provide background information on the applicant, e.g. information about individual or parent company"
                           rows={4}
-                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                          className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none`}
                           {...field}
                         />
                       </FormControl>
@@ -469,7 +518,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={control}
                   name="countryOfOrigin"
                   render={({ field }) => (
                     <FormItem>
@@ -480,7 +529,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         <Textarea
                           placeholder="Enter country of origin"
                           rows={4}
-                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                          className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none`}
                           {...field}
                         />
                       </FormControl>
@@ -501,7 +550,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                   </h3>
                 </div>
                 <FormField
-                  control={form.control}
+                  control={control}
                   name="businessPlan"
                   render={({ field }) => (
                     <FormItem>
@@ -512,7 +561,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         <Textarea
                           placeholder="Describe your business concept, target market, revenue model, and growth strategy..."
                           rows={6}
-                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                          className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none`}
                           {...field}
                         />
                       </FormControl>
@@ -533,7 +582,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                   </h3>
                 </div>
                 <FormField
-                  control={form.control}
+                  control={control}
                   name="registerAsCSP"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200">
@@ -576,7 +625,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField
-                          control={form.control}
+                          control={control}
                           name="cspContactName"
                           render={({ field }) => (
                             <FormItem>
@@ -586,7 +635,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                               <FormControl>
                                 <Input
                                   placeholder="Full name and position/title of primary contact person"
-                                  className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                                  className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
                                   {...field}
                                 />
                               </FormControl>
@@ -595,7 +644,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                           )}
                         />
                         <FormField
-                          control={form.control}
+                          control={control}
                           name="cspCompanyName"
                           render={({ field }) => (
                             <FormItem>
@@ -605,7 +654,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                               <FormControl>
                                 <Input
                                   placeholder="Company name as officially registered"
-                                  className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                                  className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
                                   {...field}
                                 />
                               </FormControl>
@@ -614,7 +663,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                           )}
                         />
                         <FormField
-                          control={form.control}
+                          control={control}
                           name="cspUEN"
                           render={({ field }) => (
                             <FormItem>
@@ -624,7 +673,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                               <FormControl>
                                 <Input
                                   placeholder="Unique Entity Number"
-                                  className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                                  className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
                                   {...field}
                                 />
                               </FormControl>
@@ -633,7 +682,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                           )}
                         />
                         <FormField
-                          control={form.control}
+                          control={control}
                           name="cspEstablishmentYear"
                           render={({ field }) => (
                             <FormItem>
@@ -646,7 +695,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                                   placeholder="YYYY"
                                   min="1900"
                                   max={new Date().getFullYear()}
-                                  className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                                  className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
                                   {...field}
                                 />
                               </FormControl>
@@ -656,7 +705,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         />
                       </div>
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspWebsite"
                         render={({ field }) => (
                           <FormItem>
@@ -667,7 +716,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                               <Input
                                 type="url"
                                 placeholder="https://www.yourcompany.com"
-                                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                                className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
                                 {...field}
                               />
                             </FormControl>
@@ -687,7 +736,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField
-                          control={form.control}
+                          control={control}
                           name="cspRQICount"
                           render={({ field }) => (
                             <FormItem>
@@ -699,7 +748,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                                   type="number"
                                   min="0"
                                   placeholder="Total RQIs"
-                                  className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                                  className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
                                   {...field}
                                 />
                               </FormControl>
@@ -708,7 +757,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                           )}
                         />
                         <FormField
-                          control={form.control}
+                          control={control}
                           name="cspExperiencedRQICount"
                           render={({ field }) => (
                             <FormItem>
@@ -720,7 +769,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                                   type="number"
                                   min="0"
                                   placeholder="Experienced RQIs"
-                                  className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                                  className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
                                   {...field}
                                 />
                               </FormControl>
@@ -729,7 +778,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                           )}
                         />
                         <FormField
-                          control={form.control}
+                          control={control}
                           name="cspYearsQualified"
                           render={({ field }) => (
                             <FormItem>
@@ -741,7 +790,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                                   type="number"
                                   min="0"
                                   placeholder="Years"
-                                  className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                                  className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
                                   {...field}
                                 />
                               </FormControl>
@@ -750,7 +799,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                           )}
                         />
                         <FormField
-                          control={form.control}
+                          control={control}
                           name="cspLicenseExpiry"
                           render={({ field }) => (
                             <FormItem>
@@ -762,7 +811,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                                   <Input
                                     type="date"
-                                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 pl-10"
+                                    className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 pl-10`}
                                     {...field}
                                   />
                                 </div>
@@ -773,7 +822,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         />
                       </div>
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspACRANotice"
                         render={({ field }) => (
                           <FormItem>
@@ -792,7 +841,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         )}
                       />
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspACRALicense"
                         render={({ field }) => (
                           <FormItem>
@@ -832,7 +881,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         )}
                       />
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspServices"
                         render={({ field }) => (
                           <FormItem>
@@ -843,7 +892,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                               <Textarea
                                 placeholder="Please state all services provided by your company, eg CSP, registered office, accounting, tax, trust, private client, etc."
                                 rows={3}
-                                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                                className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none`}
                                 {...field}
                               />
                             </FormControl>
@@ -852,7 +901,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         )}
                       />
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspCompanyProfile"
                         render={({ field }) => (
                           <FormItem>
@@ -872,7 +921,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         )}
                       />
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspClientTypes"
                         render={({ field }) => (
                           <FormItem>
@@ -917,7 +966,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         )}
                       />
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspSecurityFeatures"
                         render={({ field }) => (
                           <FormItem>
@@ -929,7 +978,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                               <Textarea
                                 placeholder="Please briefly describe the security features your company has in place to handle sensitive documents, and ensure data protection and client confidentiality"
                                 rows={4}
-                                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                                className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none`}
                                 {...field}
                               />
                             </FormControl>
@@ -948,13 +997,10 @@ export function ExpressionOfInterestForm(): ReactElement {
                         </h4>
                       </div>
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspFeeSchedule"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-gray-900 dark:text-gray-100 font-medium">
-                              Current Fee Schedule *
-                            </FormLabel>
                             <FormControl>
                               <FileUpload
                                 id="cspFeeSchedule"
@@ -970,7 +1016,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         )}
                       />
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspDifferentiators"
                         render={({ field }) => (
                           <FormItem>
@@ -981,7 +1027,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                               <Textarea
                                 placeholder="What differentiates your company's CSP services from others in the market?"
                                 rows={3}
-                                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none"
+                                className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 resize-none`}
                                 {...field}
                               />
                             </FormControl>
@@ -990,7 +1036,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         )}
                       />
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspAdditionalInfo"
                         render={({ field }) => (
                           <FormItem>
@@ -1010,7 +1056,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         )}
                       />
                       <FormField
-                        control={form.control}
+                        control={control}
                         name="cspQuestions"
                         render={({ field }) => (
                           <FormItem>
@@ -1051,7 +1097,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                   </Badge>
                 </div>
                 <FormField
-                  control={form.control}
+                  control={control}
                   name="onlinePresence"
                   render={({ field }) => (
                     <FormItem>
@@ -1062,7 +1108,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                         <Input
                           type="url"
                           placeholder="https://www.yourwebsite.com"
-                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                          className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
                           {...field}
                         />
                       </FormControl>
@@ -1073,12 +1119,22 @@ export function ExpressionOfInterestForm(): ReactElement {
               </div>
 
               <Separator className="bg-gray-200 dark:bg-gray-700" />
+              {errorMessage && (
+                <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-700 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-300" />
+                    <p className="text-red-600 dark:text-red-300">
+                      {errorMessage}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Submit Button */}
-              <div className="flex justify-center pt-8">
+              <div className="flex justify-center pt-2">
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isValid}
                   className="bg-gray-900 hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 px-12 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
@@ -1095,7 +1151,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                 </Button>
               </div>
             </form>
-          </Form>
+          </FormProvider>
         </CardContent>
       </Card>
 

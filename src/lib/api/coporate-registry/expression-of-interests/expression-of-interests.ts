@@ -1,16 +1,20 @@
 import axios from "axios";
 
 const serviceBaseUrl = `${process.env.NEXT_PUBLIC_COPORATE_REGISTRY_API_ENDPOINT}`;
-const servicePrefix = `${serviceBaseUrl}/api/expression-of-interests`;
+const servicePrefix = `${serviceBaseUrl}/api/coporate-registry/expression-of-interests`;
 
 const SubmitExpressionOfInterest = async (formData: any) => {
-  const response = await axios.post(`${servicePrefix}`, formData, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  return response.data;
+  try {
+    const response = await axios.post(`${servicePrefix}`, formData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error Submitting EOI :", error.message);
+    throw error;
+  }
 };
 
 // API to get all applications

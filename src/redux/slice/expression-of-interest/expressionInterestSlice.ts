@@ -1,4 +1,4 @@
-import ExpressionOfInterestService from "@/lib/api/expression-of-interests/expression-of-interests";
+import ExpressionOfInterestService from "@/lib/api/coporate-registry/expression-of-interests/expression-of-interests";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const submitExpressionOfInterest = createAsyncThunk(
@@ -7,10 +7,9 @@ export const submitExpressionOfInterest = createAsyncThunk(
     try {
       const response =
         await ExpressionOfInterestService.SubmitExpressionOfInterest(data);
-
       return response;
-    } catch (err) {
-      return rejectWithValue(err);
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );

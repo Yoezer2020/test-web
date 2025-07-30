@@ -1,4 +1,4 @@
-import CSPExpressionOfInterestService from "@/lib/api/csp-details/csp-details";
+import CSPExpressionOfInterestService from "@/lib/api/coporate-registry/csp-details/csp-details";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const submitCSPExpressionOfInterest = createAsyncThunk(
@@ -11,8 +11,8 @@ export const submitCSPExpressionOfInterest = createAsyncThunk(
         );
 
       return response;
-    } catch (err) {
-      return rejectWithValue(err);
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
@@ -28,10 +28,9 @@ export const uploadCSPDetails = createAsyncThunk(
         id,
         fileData
       );
-
       return response;
-    } catch (err) {
-      return rejectWithValue(err);
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );

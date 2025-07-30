@@ -1,30 +1,38 @@
 import axios from "axios";
 
 const serviceBaseUrl = `${process.env.NEXT_PUBLIC_COPORATE_REGISTRY_API_ENDPOINT}`;
-const servicePrefix = `${serviceBaseUrl}/api/csp-details`;
+const servicePrefix = `${serviceBaseUrl}/api/coporate-registry/csp-details`;
 
 const SubmitCSPExpressionOfInterest = async (formData: any) => {
-  const response = await axios.post(`${servicePrefix}`, formData, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  return response.data;
+  try {
+    const response = await axios.post(`${servicePrefix}`, formData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (err: any) {
+    console.error("Error Submitting CSP EOI :", err.message);
+    throw err;
+  }
 };
 
 const uploadCSPDetails = async (id: string, file: any) => {
-  const response = await axios.patch(
-    `${servicePrefix}/upload-files/${id}`,
-    file,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  );
-
-  return response.data;
+  try {
+    const response = await axios.patch(
+      `${servicePrefix}/upload-files/${id}`,
+      file,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (err: any) {
+    console.error("Error Uploading CSP documents :", err.message);
+    throw err;
+  }
 };
 
 // API to get all applications
