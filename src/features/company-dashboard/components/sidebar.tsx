@@ -34,7 +34,6 @@ const menuItems = [
     icon: FolderOpen,
     href: "/company-dashboard/annual-filing",
   },
-  { id: "settings", label: "Account Settings", icon: Settings, href: "#" },
 ];
 
 export function CompanyDashboardSidebar({

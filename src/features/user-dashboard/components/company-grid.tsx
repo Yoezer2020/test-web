@@ -195,8 +195,6 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
                 </div>
               </div>
 
-              {/* Action Buttons - pushed to bottom */}
-              {/* Action Buttons - pushed to bottom */}
               <div className="flex gap-2 mt-auto">
                 {company.registrationStatus === "registered" ? (
                   <Link
@@ -230,8 +228,8 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
                   <Link
                     href={
                       company.type === "Company"
-                        ? `/user-dashboard/register-company`
-                        : `/user-dashboard/register-company-branch`
+                        ? `/register-company`
+                        : `/register-company-branch`
                     }
                     className="flex-1"
                   >

@@ -1,7 +1,9 @@
 "use client";
+
 import { SimpleImage } from "@/components/inputs/simple-image/simple-image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Home } from "lucide-react";
+import { Home, Settings } from "lucide-react";
+import Link from "next/link";
 
 interface SidebarProps {
   activeItem?: string;
@@ -14,10 +16,13 @@ interface SidebarProps {
 }
 
 const sidebarItems = [
-  { id: "dashboard", label: "Dashboard", icon: Home },
-  // { id: "settings", label: "Settings", icon: Settings },
-  // { id: "mailbox", label: "Virtual Mailbox", icon: Mail },
-  // { id: "orders", label: "All Orders/Receipts", icon: FileText },
+  { id: "dashboard", label: "Dashboard", icon: Home, href: "/user-dashboard" },
+  {
+    id: "settings",
+    label: "Account Setting",
+    icon: Settings,
+    href: "/user-dashboard/user-settings",
+  },
 ];
 
 export function UserDashboardSidebar({
@@ -37,13 +42,15 @@ export function UserDashboardSidebar({
     <div className="w-64 bg-white border-r border-gray-200 shadow-sm">
       <div className="p-6">
         <div className="mb-8 flex items-center justify-center">
-          <SimpleImage
-            src="/images/logo-dark.svg"
-            alt="Description"
-            width={70}
-            height={70}
-            fallback={<div className="w-10 h-10 bg-gray-200 rounded-full" />}
-          />
+          <Link href="/user-dashboard">
+            <SimpleImage
+              src="/images/logo-dark.svg"
+              alt="Description"
+              width={70}
+              height={70}
+              fallback={<div className="w-10 h-10 bg-gray-200 rounded-full" />}
+            />
+          </Link>
         </div>
 
         {/* User Profile */}
@@ -68,22 +75,23 @@ export function UserDashboardSidebar({
             const isActive = activeItem === item.id;
 
             return (
-              <button
-                key={item.id}
-                onClick={() => onItemClick?.(item.id)}
-                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive
-                    ? "text-black bg-gray-100 border-l-4 border-black"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                <Icon
-                  className={`mr-3 h-4 w-4 ${
-                    isActive ? "text-black" : "text-gray-500"
+              <Link href={item.href} key={item.id}>
+                <button
+                  onClick={() => onItemClick?.(item.id)}
+                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    isActive
+                      ? "text-black bg-gray-100 border-l-4 border-black"
+                      : "text-gray-700 hover:bg-gray-100"
                   }`}
-                />
-                {item.label}
-              </button>
+                >
+                  <Icon
+                    className={`mr-3 h-4 w-4 ${
+                      isActive ? "text-black" : "text-gray-500"
+                    }`}
+                  />
+                  {item.label}
+                </button>
+              </Link>
             );
           })}
         </nav>

@@ -1,11 +1,8 @@
-// app/user-dashboard/page.tsx
 "use client";
 
 import { useState } from "react";
 import { CompanyGrid } from "@/features/user-dashboard/components/company-grid";
 import { SearchFilter } from "@/features/user-dashboard/components/search-filter";
-import { UserDashboardHeader } from "@/features/user-dashboard/components/header";
-import { UserDashboardSidebar } from "@/features/user-dashboard/components/sidebar";
 import { CompanyDashboardAlert } from "@/features/company-dashboard/components/dashboard-alert";
 import { PasswordUpdateModal } from "@/features/user-dashboard/components/password-update-modal";
 
@@ -59,7 +56,7 @@ const mockCompanies: Company[] = [
     registrationStatus: "incomplete",
     dateCreated: "2024-01-20",
     lastActivity: "2024-01-20",
-    progress: 100,
+    progress: 10,
     description: "Regional branch operations for parent company",
     state: "SG",
     orderNo: "223032493549",
@@ -72,7 +69,7 @@ const mockCompanies: Company[] = [
     registrationStatus: "incomplete",
     dateCreated: "2024-01-20",
     lastActivity: "2024-01-20",
-    progress: 100,
+    progress: 10,
     description: "Regional branch operations for parent company",
     state: "SG",
     orderNo: "223032493549",
@@ -99,26 +96,8 @@ export default function UserDashboard() {
   const [filterStatus, setFilterStatus] = useState<
     "all" | Company["registrationStatus"]
   >("all");
-  const [activeItem, setActiveItem] = useState("dashboard");
   const [showAlert, setShowAlert] = useState(true);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-
-  // if (status === "loading") {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-  //       <div className="flex items-center gap-2">
-  //         <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-  //         <span>Loading...</span>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  const userInfo = {
-    name: "User",
-    email: "user@example.com",
-    initials: "U".substring(0, 2).toUpperCase(),
-  };
 
   const filteredCompanies = mockCompanies.filter((company) => {
     const matchesSearch =
@@ -128,17 +107,6 @@ export default function UserDashboard() {
       filterStatus === "all" || company.registrationStatus === filterStatus;
     return matchesSearch && matchesFilter;
   });
-
-  // const stats = {
-  //   total: mockCompanies.length,
-  //   registered: mockCompanies.filter((c) => c.registrationStatus === "registered")
-  //     .length,
-  //   incomplete: mockCompanies.filter((c) => c.registrationStatus === "incomplete")
-  //     .length,
-  //   incomplete: mockCompanies.filter(
-  //     (c) => c.registrationStatus === "incomplete"
-  //   ).length,
-  // };
 
   const handlePasswordUpdate = () => {
     console.log("Opening password update modal...");
@@ -160,80 +128,35 @@ export default function UserDashboard() {
 
       // Hide the alert after successful password update
       setShowAlert(false);
-
-      // Add your actual password update API call here
-      // const response = await fetch('/api/update-password', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data)
-      // })
-
-      // if (!response.ok) throw new Error('Password update failed')
     } catch (error) {
       console.error("Password update error:", error);
-      throw error; // Re-throw to let the modal handle the error
+      throw error;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <UserDashboardSidebar
-        activeItem={activeItem}
-        userInfo={userInfo}
-        onItemClick={setActiveItem}
-      />
+    <>
+      {/* Alert Banner */}
+      {showAlert && (
+        <CompanyDashboardAlert
+          message="For security reasons, please update your password. Your current password expires soon."
+          actionText="UPDATE PASSWORD"
+          onAction={handlePasswordUpdate}
+          onDismiss={handleAlertDismiss}
+          variant="warning"
+        />
+      )}
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Alert Banner */}
-        {showAlert && (
-          <CompanyDashboardAlert
-            message="For security reasons, please update your password. Your current password expires soon."
-            actionText="UPDATE PASSWORD"
-            onAction={handlePasswordUpdate}
-            onDismiss={handleAlertDismiss}
-            variant="warning"
-          />
-        )}
+      {/* Page Content */}
+      <div className="p-6 space-y-8">
+        <SearchFilter
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          filterStatus={filterStatus}
+          onFilterChange={setFilterStatus}
+        />
 
-        {/* Header */}
-        <UserDashboardHeader />
-
-        {/* Page Content */}
-        <main className="flex-1 p-6 space-y-8">
-          {/* <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div className="flex flex-col lg:flex-row gap-2">
-              <Link
-                href={`/user-dashboard/register-company`}
-                className="flex-1"
-              >
-                <Button className="bg-gray-900 hover:bg-gray-700 text-white font-semibold shadow-md w-fit">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Register New Company
-                </Button>
-              </Link>
-              <Link
-                href={`/user-dashboard/register-company-branch`}
-                className="flex-1"
-              >
-                <Button className="bg-blue-900 hover:bg-blue-400 text-white font-semibold shadow-md w-fit">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Register New Company Branch
-                </Button>
-              </Link>
-            </div>
-          </div> */}
-
-          <SearchFilter
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            filterStatus={filterStatus}
-            onFilterChange={setFilterStatus}
-          />
-
-          <CompanyGrid companies={filteredCompanies} />
-        </main>
+        <CompanyGrid companies={filteredCompanies} />
       </div>
 
       <PasswordUpdateModal
@@ -241,6 +164,6 @@ export default function UserDashboard() {
         onClose={() => setShowPasswordModal(false)}
         onPasswordUpdate={handlePasswordUpdateSubmit}
       />
-    </div>
+    </>
   );
 }
