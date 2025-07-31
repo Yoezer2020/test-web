@@ -15,8 +15,8 @@ import Link from "next/link";
 interface Company {
   id: string;
   name: string;
-  type: "PCLBS" | "Branch";
-  registrationStatus: "completed" | "pending" | "incomplete";
+  type: "Company" | "Branch";
+  registrationStatus: "registered" | "incomplete" | "underreview" | "payment";
   dateCreated: string;
   lastActivity: string;
   progress: number;
@@ -31,8 +31,8 @@ const mockCompanies: Company[] = [
   {
     id: "1",
     name: "DRUK GLOBAL LLC",
-    type: "PCLBS",
-    registrationStatus: "completed",
+    type: "Company",
+    registrationStatus: "registered",
     dateCreated: "2024-01-15",
     lastActivity: "2024-01-20",
     progress: 100,
@@ -45,11 +45,11 @@ const mockCompanies: Company[] = [
   {
     id: "2",
     name: "TECH INNOVATIONS PTE LTD",
-    type: "PCLBS",
-    registrationStatus: "pending",
+    type: "Company",
+    registrationStatus: "payment",
     dateCreated: "2024-01-18",
     lastActivity: "2024-01-19",
-    progress: 75,
+    progress: 100,
     description: "Software development and technology solutions",
     state: "SG",
     orderNo: "223032493548",
@@ -59,10 +59,10 @@ const mockCompanies: Company[] = [
     id: "3",
     name: "SINGAPORE BRANCH OFFICE",
     type: "Branch",
-    registrationStatus: "pending",
+    registrationStatus: "incomplete",
     dateCreated: "2024-01-20",
     lastActivity: "2024-01-20",
-    progress: 30,
+    progress: 100,
     description: "Regional branch operations for parent company",
     state: "SG",
     orderNo: "223032493549",
@@ -70,9 +70,22 @@ const mockCompanies: Company[] = [
   },
   {
     id: "4",
+    name: "SINGAPORE COMPANY OFFICE",
+    type: "Company",
+    registrationStatus: "incomplete",
+    dateCreated: "2024-01-20",
+    lastActivity: "2024-01-20",
+    progress: 100,
+    description: "Regional branch operations for parent company",
+    state: "SG",
+    orderNo: "223032493549",
+    email: "cringnidupgmail.com",
+  },
+  {
+    id: "5",
     name: "GREEN ENERGY SOLUTIONS",
-    type: "PCLBS",
-    registrationStatus: "completed",
+    type: "Company",
+    registrationStatus: "registered",
     dateCreated: "2023-12-10",
     lastActivity: "2024-01-18",
     progress: 100,
@@ -121,9 +134,9 @@ export default function UserDashboard() {
 
   // const stats = {
   //   total: mockCompanies.length,
-  //   completed: mockCompanies.filter((c) => c.registrationStatus === "completed")
+  //   registered: mockCompanies.filter((c) => c.registrationStatus === "registered")
   //     .length,
-  //   pending: mockCompanies.filter((c) => c.registrationStatus === "pending")
+  //   incomplete: mockCompanies.filter((c) => c.registrationStatus === "incomplete")
   //     .length,
   //   incomplete: mockCompanies.filter(
   //     (c) => c.registrationStatus === "incomplete"
@@ -192,19 +205,7 @@ export default function UserDashboard() {
 
         {/* Page Content */}
         <main className="flex-1 p-6 space-y-8">
-          {/* Action Items */}
-          {/* <ActionItems /> */}
-
-          {/* Header Section */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            {/* <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                My Companies
-              </h1>
-              <p className="text-gray-600 font-medium">
-                Manage and monitor your company registrations
-              </p>
-            </div> */}
+          {/* <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex flex-col lg:flex-row gap-2">
               <Link
                 href={`/user-dashboard/register-company`}
@@ -225,9 +226,7 @@ export default function UserDashboard() {
                 </Button>
               </Link>
             </div>
-          </div>
-          {/* Stats Cards */}
-          {/* <StatsCards stats={stats} /> */}
+          </div> */}
 
           {/* Search and Filter Section */}
           <SearchFilter

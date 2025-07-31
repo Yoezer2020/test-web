@@ -19,14 +19,15 @@ import {
   TrendingUp,
   Building2,
   Plus,
+  CreditCard,
 } from "lucide-react";
 import Link from "next/link";
 
 interface Company {
   id: string;
   name: string;
-  type: "PCLBS" | "Branch";
-  registrationStatus: "completed" | "pending" | "incomplete";
+  type: "Company" | "Branch";
+  registrationStatus: "registered" | "incomplete" | "underreview" | "payment";
   dateCreated: string;
   lastActivity: string;
   progress: number;
@@ -43,9 +44,11 @@ interface CompanyGridProps {
 
 const getStatusColor = (status: Company["registrationStatus"]) => {
   switch (status) {
-    case "completed":
+    case "registered":
       return "bg-green-100 text-green-800 border-green-200";
-    case "pending":
+    case "underreview":
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    case "payment":
       return "bg-yellow-100 text-yellow-800 border-yellow-200";
     case "incomplete":
       return "bg-red-100 text-red-800 border-red-200";
@@ -56,9 +59,9 @@ const getStatusColor = (status: Company["registrationStatus"]) => {
 
 const getStatusIcon = (status: Company["registrationStatus"]) => {
   switch (status) {
-    case "completed":
+    case "registered":
       return <CheckCircle2 className="h-4 w-4" />;
-    case "pending":
+    case "incomplete":
       return <Clock className="h-4 w-4" />;
     case "incomplete":
       return <AlertCircle className="h-4 w-4" />;
@@ -96,9 +99,9 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
         {companies.map((company) => (
           <Card
             key={company.id}
-            className="border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-all duration-300 hover:border-gray-400"
+            className="border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-all duration-300 hover:border-gray-400 h-full flex flex-col"
           >
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-4 flex-shrink-0">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-black rounded-lg flex items-center justify-center shadow-md">
@@ -145,7 +148,7 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
               )}
             </CardHeader>
 
-            <CardContent className="pt-0">
+            <CardContent className="pt-0 flex-grow flex flex-col">
               <CardDescription className="text-sm text-gray-600 mb-4 min-h-[2.5rem] font-medium">
                 {company.description}
               </CardDescription>
@@ -175,7 +178,7 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
               </div>
 
               {/* Company Details */}
-              <div className="space-y-2 mb-6">
+              <div className="space-y-2 mb-6 flex-grow">
                 <div className="flex items-center text-sm text-gray-600">
                   <Calendar className="h-4 w-4 mr-2" />
                   <span className="font-medium">
@@ -192,23 +195,51 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-2">
-                {company.registrationStatus === "completed" ? (
-                  <Link href={`/company-dashboard`} className="flex-1">
+              {/* Action Buttons - pushed to bottom */}
+              {/* Action Buttons - pushed to bottom */}
+              <div className="flex gap-2 mt-auto">
+                {company.registrationStatus === "registered" ? (
+                  <Link
+                    href={
+                      company.type === "Company"
+                        ? `/company-dashboard`
+                        : `/branch-dashboard`
+                    }
+                    className="flex-1"
+                  >
                     <Button className="w-full bg-black hover:bg-gray-800 text-white font-semibold shadow-md transition-all duration-200">
                       <Eye className="h-4 w-4 mr-2" />
-                      View Company
+                      View {company.type === "Company" ? "Company" : "Branch"}
+                    </Button>
+                  </Link>
+                ) : company.registrationStatus === "payment" ? (
+                  <Link
+                    href={
+                      company.type === "Company"
+                        ? `/payment-page`
+                        : `/branch-payment-page`
+                    }
+                    className="flex-1"
+                  >
+                    <Button className="w-full bg-black hover:bg-gray-800 text-white font-semibold shadow-md transition-all duration-200">
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Make Payment
                     </Button>
                   </Link>
                 ) : (
                   <Link
-                    href={`/user-dashboard/register-company`}
+                    href={
+                      company.type === "Company"
+                        ? `/user-dashboard/register-company`
+                        : `/user-dashboard/register-company-branch`
+                    }
                     className="flex-1"
                   >
                     <Button className="w-full bg-black hover:bg-gray-800 text-white font-semibold shadow-md transition-all duration-200">
                       <FileEdit className="h-4 w-4 mr-2" />
-                      Complete Registration
+                      Complete{" "}
+                      {company.type === "Company" ? "Company" : "Branch"}{" "}
+                      Registration
                     </Button>
                   </Link>
                 )}

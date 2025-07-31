@@ -8,9 +8,9 @@ import { Search } from "lucide-react";
 interface SearchFilterProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
-  filterStatus: "all" | "completed" | "pending" | "incomplete";
+  filterStatus: "all" | "registered" | "incomplete" | "underreview" | "payment";
   onFilterChange: (
-    status: "all" | "completed" | "pending" | "incomplete"
+    status: "all" | "registered" | "incomplete" | "underreview" | "payment"
   ) => void;
 }
 
