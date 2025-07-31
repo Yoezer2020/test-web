@@ -224,7 +224,6 @@ export default function BranchRegistrationPage() {
     experienceRating: 0,
     feedback: "",
   });
-  // const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 

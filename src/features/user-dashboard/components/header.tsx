@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { NotificationDropdown } from "./notification-drop-down";
 
 export function UserDashboardHeader({}) {
   const router = useRouter();
@@ -26,6 +27,7 @@ export function UserDashboardHeader({}) {
         <div className="flex items-center space-x-4"></div>
 
         <div className="flex items-center space-x-3">
+          <NotificationDropdown />
           <Button
             onClick={handleLogout}
             variant="ghost"
