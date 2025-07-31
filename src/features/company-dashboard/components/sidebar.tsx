@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FolderOpen, Building2, Settings, LogOut, Menu, X } from "lucide-react";
@@ -15,13 +16,24 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  // { id: "dashboard", label: "Dashboard", icon: Home, href: "#" },
-  // { id: "applications", label: "My Applications", icon: FileText, href: "#" },
-  // { id: "team", label: "Team Management", icon: Users, href: "#" },
-  { id: "documents", label: "Document Center", icon: FolderOpen, href: "#" },
-  { id: "profile", label: "Company Profile", icon: Building2, href: "#" },
-  // { id: "compliance", label: "Compliance & Updates", icon: Shield, href: "#" },
-  // { id: "support", label: "Support", icon: HelpCircle, href: "#" },
+  {
+    id: "documents",
+    label: "Document Center",
+    icon: FolderOpen,
+    href: "/company-dashboard/company-documents",
+  },
+  {
+    id: "profile",
+    label: "Company Profile",
+    icon: Building2,
+    href: "/company-dashboard/company-profile",
+  },
+  {
+    id: "compliance",
+    label: "Annual Filing",
+    icon: FolderOpen,
+    href: "/company-dashboard/annual-filing",
+  },
   { id: "settings", label: "Account Settings", icon: Settings, href: "#" },
 ];
 
@@ -30,6 +42,7 @@ export function CompanyDashboardSidebar({
   userInfo,
 }: SidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const router = useRouter();
 
   const defaultUser = {
     name: "John Doe",
@@ -44,6 +57,11 @@ export function CompanyDashboardSidebar({
   const handleLogout = () => {
     console.log("Logging out...");
     // Add logout logic here
+  };
+
+  const handleNavigation = (href: string) => {
+    router.push(href);
+    setIsMobileOpen(false);
   };
 
   return (
@@ -77,17 +95,6 @@ export function CompanyDashboardSidebar({
         } md:translate-x-0`}
       >
         <div className="flex flex-col h-full">
-          {/* Back to Companies Button */}
-          {/* <div className="p-4 border-b border-gray-200">
-            <Link
-              href="/"
-              className="flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Companies
-            </Link>
-          </div> */}
-
           {/* User Profile Section */}
           <div className="p-6 border-b border-gray-200 bg-gray-50">
             <div className="flex items-center space-x-3">
@@ -127,7 +134,7 @@ export function CompanyDashboardSidebar({
                       ? "bg-black text-white shadow-md"
                       : "text-gray-700 hover:bg-gray-100 hover:text-black"
                   }`}
-                  onClick={() => setIsMobileOpen(false)}
+                  onClick={() => handleNavigation(item.href)}
                 >
                   <Icon
                     className={`mr-3 h-5 w-5 ${

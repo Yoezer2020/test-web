@@ -2,15 +2,12 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { CompanyGrid } from "@/features/user-dashboard/components/company-grid";
 import { SearchFilter } from "@/features/user-dashboard/components/search-filter";
 import { UserDashboardHeader } from "@/features/user-dashboard/components/header";
 import { UserDashboardSidebar } from "@/features/user-dashboard/components/sidebar";
 import { CompanyDashboardAlert } from "@/features/company-dashboard/components/dashboard-alert";
 import { PasswordUpdateModal } from "@/features/user-dashboard/components/password-update-modal";
-import Link from "next/link";
 
 interface Company {
   id: string;
@@ -228,7 +225,6 @@ export default function UserDashboard() {
             </div>
           </div> */}
 
-          {/* Search and Filter Section */}
           <SearchFilter
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
@@ -236,12 +232,10 @@ export default function UserDashboard() {
             onFilterChange={setFilterStatus}
           />
 
-          {/* Companies Grid */}
           <CompanyGrid companies={filteredCompanies} />
         </main>
       </div>
 
-      {/* Password Update Modal */}
       <PasswordUpdateModal
         isOpen={showPasswordModal}
         onClose={() => setShowPasswordModal(false)}

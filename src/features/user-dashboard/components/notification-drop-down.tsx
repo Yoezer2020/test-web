@@ -16,14 +16,15 @@ import { useState } from "react";
 const notifications = [
   {
     id: 1,
-    title: "New Application Received",
-    description: "Your expression of interest has been submitted successfully.",
+    title: "Incoporation Submitted",
+    description: "Your application form has been submitted",
     time: "2 hours ago",
   },
   {
     id: 2,
-    title: "Document Update",
-    description: "Your business plan document has been reviewed.",
+    title: "Payment",
+    description:
+      "Your application has been approved now please proceed to payment",
     time: "1 day ago",
   },
   {

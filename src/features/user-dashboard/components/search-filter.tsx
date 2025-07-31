@@ -47,10 +47,10 @@ export function SearchFilter({
               All
             </Button>
             <Button
-              variant={filterStatus === "completed" ? "default" : "outline"}
-              onClick={() => onFilterChange("completed")}
+              variant={filterStatus === "registered" ? "default" : "outline"}
+              onClick={() => onFilterChange("registered")}
               className={
-                filterStatus === "completed"
+                filterStatus === "registered"
                   ? "bg-black text-white hover:bg-gray-800"
                   : "border-gray-300 text-gray-700 hover:bg-gray-50"
               }
@@ -59,16 +59,16 @@ export function SearchFilter({
               Completed
             </Button>
             <Button
-              variant={filterStatus === "pending" ? "default" : "outline"}
-              onClick={() => onFilterChange("pending")}
+              variant={filterStatus === "incomplete" ? "default" : "outline"}
+              onClick={() => onFilterChange("incomplete")}
               className={
-                filterStatus === "pending"
+                filterStatus === "incomplete"
                   ? "bg-black text-white hover:bg-gray-800"
                   : "border-gray-300 text-gray-700 hover:bg-gray-50"
               }
               size="sm"
             >
-              Pending
+              Incomplete
             </Button>
           </div>
         </div>

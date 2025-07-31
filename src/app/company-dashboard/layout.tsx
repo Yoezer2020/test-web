@@ -11,12 +11,8 @@ export default function CompanyDashboardLayout({
   children: React.ReactNode;
   params: Promise<{ companyId: string }>;
 }) {
-  // Since params is now a Promise, we need to handle it accordingly
-  // In a real app, you would likely use async/await or React Suspense
-  // For demonstration, we'll use a mock value
   const companyId = "1"; // You would normally get this from the resolved params
 
-  // Mock company data - in real app, fetch based on companyId
   const companyData = {
     "1": { name: "DRUK GLOBAL LLC", initials: "DG" },
     "2": { name: "TECH INNOVATIONS PTE LTD", initials: "TI" },
@@ -33,14 +29,6 @@ export default function CompanyDashboardLayout({
     name: "Tenzin Yoezer",
     email: "tenzinoser2@gmail.com",
     avatar: "",
-  };
-
-  const handleStartNewCompany = () => {
-    console.log("Starting new company registration...");
-  };
-
-  const handleFilingServices = () => {
-    console.log("Opening filing services...");
   };
 
   const handleLogout = () => {
@@ -64,12 +52,8 @@ export default function CompanyDashboardLayout({
         <CompanyDashboardHeader
           companyName={company.name}
           companyInitials={company.initials}
-          onStartNewCompany={handleStartNewCompany}
-          onFilingServices={handleFilingServices}
           onLogout={handleLogout}
         />
-
-        {/* Page Content */}
         <main className="min-h-screen">{children}</main>
       </div>
     </div>

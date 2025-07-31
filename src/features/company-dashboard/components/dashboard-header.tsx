@@ -6,16 +6,14 @@ import { Plus, FileText, LogOut } from "lucide-react";
 interface CompanyDashboardHeaderProps {
   companyName?: string;
   companyInitials?: string;
-  onStartNewCompany?: () => void;
-  onFilingServices?: () => void;
+
   onLogout?: () => void;
 }
 
 export function CompanyDashboardHeader({
   companyName = "DRUK GLOBAL LLC",
   companyInitials = "DG",
-  onStartNewCompany,
-  onFilingServices,
+
   onLogout,
 }: CompanyDashboardHeaderProps) {
   return (
@@ -43,25 +41,6 @@ export function CompanyDashboardHeader({
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-3">
-          <Button
-            onClick={onStartNewCompany}
-            className="bg-black hover:bg-gray-800 text-white font-semibold shadow-md"
-            size="sm"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            START A NEW COMPANY
-          </Button>
-
-          <Button
-            onClick={onFilingServices}
-            variant="outline"
-            className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 bg-white font-semibold"
-            size="sm"
-          >
-            <FileText className="h-4 w-4 mr-2" />
-            FILING SERVICES
-          </Button>
-
           <Button
             onClick={onLogout}
             variant="ghost"

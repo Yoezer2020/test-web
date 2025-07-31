@@ -172,57 +172,6 @@ export default function CompanyDashboardPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Dashboard Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="border-2 border-gray-200 bg-white shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                  Total Applications
-                </p>
-                <p className="text-3xl font-bold text-gray-900">12</p>
-              </div>
-              <div className="p-3 bg-gray-100 rounded-lg">
-                <FileText className="h-8 w-8 text-gray-700" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-gray-200 bg-white shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                  Pending Reviews
-                </p>
-                <p className="text-3xl font-bold text-gray-900">3</p>
-              </div>
-              <div className="p-3 bg-gray-100 rounded-lg">
-                <TrendingUp className="h-8 w-8 text-gray-700" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-gray-200 bg-white shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                  Completed
-                </p>
-                <p className="text-3xl font-bold text-gray-900">9</p>
-              </div>
-              <div className="p-3 bg-gray-100 rounded-lg">
-                <User className="h-8 w-8 text-gray-700" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Quick Actions Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="border-2 border-gray-200 bg-white shadow-lg">
