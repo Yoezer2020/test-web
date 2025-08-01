@@ -19,8 +19,6 @@ import {
   AlertCircle,
   Calendar,
   User,
-  TrendingUp,
-  FileText,
 } from "lucide-react";
 
 interface RecommendationCard {

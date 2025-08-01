@@ -1,5 +1,4 @@
 "use client";
-import { use } from "react";
 import {
   Card,
   CardContent,
@@ -38,10 +37,6 @@ import {
   AlertCircle,
   DollarSign,
 } from "lucide-react";
-
-interface Props {
-  params: Promise<{ companyId: string }>;
-}
 
 // Mock company data
 const companyData = {
@@ -193,8 +188,8 @@ const getStatusColor = (status: string) => {
   }
 };
 
-export default function CompanyProfilePage({ params }: Props) {
-  const resolvedParams = use(params);
+export default function CompanyProfilePage() {
+  // const resolvedParams = use(params);
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 interface CompanyDashboardHeaderProps {
   companyName?: string;

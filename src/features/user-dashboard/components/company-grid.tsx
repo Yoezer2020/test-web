@@ -212,11 +212,7 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
                   </Link>
                 ) : company.registrationStatus === "payment" ? (
                   <Link
-                    href={
-                      company.type === "Company"
-                        ? `/payment-page`
-                        : `/branch-payment-page`
-                    }
+                    href={`/user-dashboard/registration-payment-page`}
                     className="flex-1"
                   >
                     <Button className="w-full bg-black hover:bg-gray-800 text-white font-semibold shadow-md transition-all duration-200">

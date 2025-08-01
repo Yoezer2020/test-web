@@ -329,25 +329,23 @@ const getDaysUntilDue = (dueDate: string) => {
 };
 
 export default function AnnualFiling() {
-  const [filings, setFilings] = useState<Filing[]>(mockFilings);
-  const [selectedFiling, setSelectedFiling] = useState<Filing | null>(null);
-  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  // const [filings, setFilings] = useState<Filing[]>(mockFilings);
   const [isNewFilingDialogOpen, setIsNewFilingDialogOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState("overview");
 
-  const upcomingFilings = filings.filter((filing) => {
+  const upcomingFilings = mockFilings.filter((filing) => {
     const daysUntil = getDaysUntilDue(filing.dueDate);
     return daysUntil <= 30 && daysUntil >= 0 && filing.status !== "completed";
   });
 
-  const overdueFilings = filings.filter(
+  const overdueFilings = mockFilings.filter(
     (filing) => filing.status === "overdue"
   );
-  const completedFilings = filings.filter(
+  const completedFilings = mockFilings.filter(
     (filing) => filing.status === "completed"
   );
-  const totalFees = filings.reduce((sum, filing) => sum + filing.fee, 0);
-  const paidFees = filings
+  const totalFees = mockFilings.reduce((sum, filing) => sum + filing.fee, 0);
+  const paidFees = mockFilings
     .filter((f) => f.feeStatus === "paid")
     .reduce((sum, filing) => sum + filing.fee, 0);
 
@@ -691,7 +689,7 @@ export default function AnnualFiling() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filings.map((filing) => {
+                  {mockFilings.map((filing) => {
                     const daysUntil = getDaysUntilDue(filing.dueDate);
                     return (
                       <TableRow key={filing.id}>
@@ -843,7 +841,7 @@ export default function AnnualFiling() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filings.map((filing) => {
+                {mockFilings.map((filing) => {
                   const daysUntil = getDaysUntilDue(filing.dueDate);
                   return (
                     <Card

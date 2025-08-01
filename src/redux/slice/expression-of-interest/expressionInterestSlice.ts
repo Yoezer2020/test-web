@@ -3,11 +3,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const submitExpressionOfInterest = createAsyncThunk(
   "expressionOfInterest/submitExpressionOfInterest",
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (data: any, { rejectWithValue }) => {
     try {
       const response =
         await ExpressionOfInterestService.SubmitExpressionOfInterest(data);
       return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
     }

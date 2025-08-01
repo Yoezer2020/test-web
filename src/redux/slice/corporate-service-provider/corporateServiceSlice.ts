@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const submitCSPExpressionOfInterest = createAsyncThunk(
   "corporateServiceProvider/submitCorporateEOI",
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (data: any, { rejectWithValue }) => {
     try {
       const response =
@@ -11,6 +12,7 @@ export const submitCSPExpressionOfInterest = createAsyncThunk(
         );
 
       return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -20,6 +22,7 @@ export const submitCSPExpressionOfInterest = createAsyncThunk(
 export const uploadCSPDetails = createAsyncThunk(
   "corporateServiceProvider/uploadCSPDetails",
   async (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     { id, fileData }: { id: string; fileData: any },
     { rejectWithValue }
   ) => {
@@ -29,6 +32,7 @@ export const uploadCSPDetails = createAsyncThunk(
         fileData
       );
       return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
     }

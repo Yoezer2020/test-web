@@ -52,7 +52,7 @@ import {
   CheckCircle,
   Clock,
   X,
-  Image,
+  File,
   FileSpreadsheet,
   FileImage,
   FileIcon as FilePdf,
@@ -212,7 +212,7 @@ const getFileIcon = (type: string) => {
     case "rar":
       return <Folder className="h-5 w-5 text-yellow-600" />;
     default:
-      return <Image className="h-5 w-5 text-gray-600" />;
+      return <File className="h-5 w-5 text-gray-600" />;
   }
 };
 

@@ -3,6 +3,7 @@ import axios from "axios";
 const serviceBaseUrl = `${process.env.NEXT_PUBLIC_COPORATE_REGISTRY_API_ENDPOINT}`;
 const servicePrefix = `${serviceBaseUrl}/api/coporate-registry/expression-of-interests`;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SubmitExpressionOfInterest = async (formData: any) => {
   try {
     const response = await axios.post(`${servicePrefix}`, formData, {
@@ -11,6 +12,7 @@ const SubmitExpressionOfInterest = async (formData: any) => {
       },
     });
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Error Submitting EOI :", error.message);
     throw error;
@@ -27,6 +29,7 @@ const GetAllApplications = async () => {
 };
 
 // API to fetch route permit application details
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const GetRoutePermitApplicationDetails = async (id: any) => {
   return axios
     .get(
@@ -37,7 +40,7 @@ const GetRoutePermitApplicationDetails = async (id: any) => {
 };
 
 // API to submit form details
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DeleteRoutePermitApplications = async (id: any) => {
   return axios
     .delete(`${servicePrefix}/route-permit-applications/${id}`)
@@ -45,6 +48,7 @@ const DeleteRoutePermitApplications = async (id: any) => {
 };
 
 // API to resubmit details after reapply
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ReSubmitRoutePermitDetails = async (id: any, formData: any) => {
   const response = await axios.patch(
     `${servicePrefix}/route-permit-applications/resubmit/${id}`,
@@ -53,7 +57,7 @@ const ReSubmitRoutePermitDetails = async (id: any, formData: any) => {
 
   return response.data;
 };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const GetRoutePermitsByAppNo = async (applicationNo: any) => {
   const response = await axios.get(
     `${servicePrefix}/route-permits/${applicationNo}/generate-route-permit`

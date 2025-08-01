@@ -3,6 +3,7 @@ import axios from "axios";
 const serviceBaseUrl = `${process.env.NEXT_PUBLIC_COPORATE_REGISTRY_API_ENDPOINT}`;
 const servicePrefix = `${serviceBaseUrl}/api/coporate-registry/csp-details`;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SubmitCSPExpressionOfInterest = async (formData: any) => {
   try {
     const response = await axios.post(`${servicePrefix}`, formData, {
@@ -11,12 +12,13 @@ const SubmitCSPExpressionOfInterest = async (formData: any) => {
       },
     });
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     console.error("Error Submitting CSP EOI :", err.message);
     throw err;
   }
 };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const uploadCSPDetails = async (id: string, file: any) => {
   try {
     const response = await axios.patch(
@@ -29,6 +31,7 @@ const uploadCSPDetails = async (id: string, file: any) => {
       }
     );
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     console.error("Error Uploading CSP documents :", err.message);
     throw err;
@@ -45,6 +48,7 @@ const GetAllApplications = async () => {
 };
 
 // API to fetch route permit application details
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const GetRoutePermitApplicationDetails = async (id: any) => {
   return axios
     .get(
@@ -55,7 +59,7 @@ const GetRoutePermitApplicationDetails = async (id: any) => {
 };
 
 // API to submit form details
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DeleteRoutePermitApplications = async (id: any) => {
   return axios
     .delete(`${servicePrefix}/route-permit-applications/${id}`)
@@ -63,6 +67,7 @@ const DeleteRoutePermitApplications = async (id: any) => {
 };
 
 // API to resubmit details after reapply
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ReSubmitRoutePermitDetails = async (id: any, formData: any) => {
   const response = await axios.patch(
     `${servicePrefix}/route-permit-applications/resubmit/${id}`,
@@ -71,7 +76,7 @@ const ReSubmitRoutePermitDetails = async (id: any, formData: any) => {
 
   return response.data;
 };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const GetRoutePermitsByAppNo = async (applicationNo: any) => {
   const response = await axios.get(
     `${servicePrefix}/route-permits/${applicationNo}/generate-route-permit`

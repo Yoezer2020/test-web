@@ -2,16 +2,17 @@
 
 import { CompanyDashboardHeader } from "@/features/company-dashboard/components/dashboard-header";
 import { CompanyDashboardSidebar } from "@/features/company-dashboard/components/sidebar";
+import { useRouter } from "next/navigation";
 import type React from "react";
 
 export default function CompanyDashboardLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
   params: Promise<{ companyId: string }>;
 }) {
   const companyId = "1"; // You would normally get this from the resolved params
+  const router = useRouter();
 
   const companyData = {
     "1": { name: "DRUK GLOBAL LLC", initials: "DG" },
@@ -32,8 +33,7 @@ export default function CompanyDashboardLayout({
   };
 
   const handleLogout = () => {
-    console.log("Logging out...");
-    console.log(params);
+    router.push("/user-dashboard");
   };
 
   return (
