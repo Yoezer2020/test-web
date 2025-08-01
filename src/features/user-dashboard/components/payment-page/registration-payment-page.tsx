@@ -118,7 +118,7 @@ export default function StripeCheckout() {
                   </span>
                 </div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                  Choose How You&lsquio;d Like to Pay
+                  Choose How You Would Like to Pay
                 </h1>
               </div>
 
@@ -224,11 +224,15 @@ export default function StripeCheckout() {
                           />
                           <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex gap-1">
                             <Image
+                              height={20}
+                              width={32}
                               src="/placeholder.svg?height=20&width=32&text=VISA"
                               alt="Visa"
                               className="h-5 w-8 object-contain"
                             />
                             <Image
+                              height={20}
+                              width={32}
                               src="/placeholder.svg?height=20&width=32&text=MC"
                               alt="Mastercard"
                               className="h-5 w-8 object-contain"

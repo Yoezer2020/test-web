@@ -11,9 +11,9 @@ export function UserDashboardHeader({}) {
 
   const handleLogout = async () => {
     try {
-      await signOut({
-        redirect: false,
-      });
+      // await signOut({
+      //   redirect: false,
+      // });
       router.push("/auth/login");
       router.refresh();
     } catch (error) {
