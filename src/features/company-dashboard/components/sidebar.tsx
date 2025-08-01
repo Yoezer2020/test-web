@@ -4,7 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FolderOpen, Building2, LogOut, Menu, X } from "lucide-react";
+import {
+  FolderOpen,
+  Building2,
+  LogOut,
+  Menu,
+  X,
+  LayoutDashboard,
+  FileCheck,
+} from "lucide-react";
 
 interface SidebarProps {
   activeItem?: string;
@@ -16,6 +24,12 @@ interface SidebarProps {
 }
 
 const menuItems = [
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/company-dashboard",
+  },
   {
     id: "documents",
     label: "Document Center",
@@ -31,7 +45,7 @@ const menuItems = [
   {
     id: "compliance",
     label: "Annual Filing",
-    icon: FolderOpen,
+    icon: FileCheck,
     href: "/company-dashboard/annual-filing",
   },
 ];
