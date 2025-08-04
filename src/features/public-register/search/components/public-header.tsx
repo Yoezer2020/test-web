@@ -238,7 +238,7 @@ export function PublicHeader() {
                 size="sm"
                 className="hidden sm:flex bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
-                <NextLink href="/public-register/start-business">
+                <NextLink href="/public/public-register/start-business">
                   Start a Business
                 </NextLink>
               </Button>
