@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactElement } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -47,7 +47,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useAppDispatch } from "@/redux/store";
+import { submitExpressionOfInterest } from "@/redux/slice/expression-of-interest/expressionInterestSlice";
 
+const defaultValues: FormData = {
+  email: "",
+  entityType: "",
+  businessPlan: "",
+  applicantDescription: "",
+  countryOfOrigin: "",
+  onlinePresence: "",
+};
 // Base schema for common fields
 const baseSchema = z.object({
   email: z
@@ -70,139 +80,74 @@ const baseSchema = z.object({
       (value) => !value || /^https?:\/\/.+/.test(value),
       "Please enter a valid URL (starting with http:// or https://)"
     ),
-  registerAsCSP: z.boolean(),
 });
 
 // Type definition for the form data
 export type FormData = z.infer<typeof baseSchema>;
 
 export function ExpressionOfInterestForm(): ReactElement {
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  // const [formDataToSubmit, setFormDataToSubmit] = useState<FormData | null>(
-  //   null
-  // );
-  // const [errorMessage, setErrorMessage] = useState("");
+  const [formDataToSubmit, setFormDataToSubmit] = useState<FormData | null>(
+    null
+  );
+  const [errorMessage, setErrorMessage] = useState("");
 
   const methods = useForm<FormData>({
     resolver: zodResolver(baseSchema),
     mode: "onChange",
+    defaultValues,
   });
 
   const {
     control,
+    reset,
     handleSubmit,
     formState: { errors, isValid },
   } = methods;
 
   // Handle form submission
-  const onSubmit = async () => {
-    // setFormDataToSubmit(data);
-    // setShowConfirmation(true);
+  const onSubmit = async (data: any) => {
+    setFormDataToSubmit(data);
+    setShowConfirmation(true);
   };
 
   // Handle confirmation from dialog
   const confirmSubmission = async () => {
-    // if (!formDataToSubmit) return;
-    // setShowConfirmation(false);
+    console.log("form data during submission:", formDataToSubmit);
+    if (!formDataToSubmit) return;
+    const formData = {
+      email: formDataToSubmit?.email,
+      entityType: formDataToSubmit?.entityType,
+      businessPlans: formDataToSubmit?.businessPlan,
+      applicantType: "applicant",
+      companyInformation: formDataToSubmit?.applicantDescription,
+      country: formDataToSubmit?.countryOfOrigin,
+      onlinePresence: formDataToSubmit?.onlinePresence || "",
+    };
+    setShowConfirmation(false);
     setIsSubmitting(true);
-    // function isCSPFormData(
-    //   data: FormData
-    // ): data is FormData & { registerAsCSP: true } & z.infer<typeof cspSchema> {
-    //   return data.registerAsCSP === true;
-    // }
-    // const basicEntity = {
-    //   email: formDataToSubmit.email,
-    //   entityType: formDataToSubmit.entityType,
-    //   businessPlans: formDataToSubmit.businessPlan,
-    //   applicantType: "applicant",
-    //   companyInformation: formDataToSubmit.applicantDescription,
-    //   country: formDataToSubmit.countryOfOrigin,
-    //   onlinePresence: formDataToSubmit.onlinePresence,
-    // };
-    // try {
-    //   const eoiResponse = await dispatch(
-    //     submitExpressionOfInterest(basicEntity)
-    //   ).unwrap();
-    //   if (isCSPFormData(formDataToSubmit)) {
-    //     const cspEntity = {
-    //       eoiId: eoiResponse.id,
-    //       contactDetails: formDataToSubmit.cspContactName,
-    //       companyName: formDataToSubmit.cspCompanyName,
-    //       UEN: formDataToSubmit.cspUEN,
-    //       yearEstablished: formDataToSubmit.cspEstablishmentYear,
-    //       website: formDataToSubmit.cspWebsite,
-    //       numberOfRqi: formDataToSubmit.cspRQICount,
-    //       fiveYearsRoi: formDataToSubmit.cspExperiencedRQICount,
-    //       qualifiedYears: formDataToSubmit.cspYearsQualified,
-    //       rfaExpiryDate: formDataToSubmit.cspLicenseExpiry,
-    //       registeredFillingAgent: formDataToSubmit.cspACRALicense,
-    //       servicesProvided: formDataToSubmit.cspServices,
-    //       clientTypeServed: formDataToSubmit.cspClientTypes,
-    //       security: formDataToSubmit.cspSecurityFeatures,
-    //       serviceDifferentiators: formDataToSubmit.cspDifferentiators,
-    //       questions: formDataToSubmit.cspQuestions,
-    //     };
-    //     try {
-    //       const cspResponse = await dispatch(
-    //         submitCSPExpressionOfInterest(cspEntity)
-    //       ).unwrap();
-    //       const files = new FormData();
-    //       files.append("acra", formDataToSubmit.cspACRANotice[0]);
-    //       if (formDataToSubmit.cspCompanyProfile?.[0]) {
-    //         files.append(
-    //           "companyProfile",
-    //           formDataToSubmit.cspCompanyProfile[0]
-    //         );
-    //       }
-    //       files.append(
-    //         "currentFeeSchedule",
-    //         formDataToSubmit.cspFeeSchedule[0]
-    //       );
-    //       try {
-    //         await dispatch(
-    //           uploadCSPDetails({ id: cspResponse.id, fileData: files })
-    //         ).unwrap();
-    //         setSubmitSuccess(true);
-    //         setIsSubmitting(false);
-    //         setFormDataToSubmit(null);
-    //       } catch (err: any) {
-    //         setErrorMessage(
-    //           err?.response?.data?.message ??
-    //             "Failed to upload CSP supporting documents"
-    //         );
-    //         setIsSubmitting(false);
-    //       }
-    //     } catch (err: any) {
-    //       setErrorMessage(
-    //         err?.response?.data?.message ??
-    //           "Failed to submit Expression of Interest for CSP"
-    //       );
-    //       setIsSubmitting(false);
-    //     }
-    //   } else {
-    //     // Non-CSP submission is successful
-    //     setSubmitSuccess(true);
-    //     setIsSubmitting(false);
-    //     setFormDataToSubmit(null);
-    //   }
-    // } catch (err: any) {
-    //   setErrorMessage(
-    //     err?.response?.data?.message ??
-    //       "Failed to submit Expression of Interest"
-    //   );
-    //   setIsSubmitting(false);
-    // }
+    dispatch(submitExpressionOfInterest(formData))
+      .unwrap()
+      .then(() => {
+        setIsSubmitting(false);
+        setSubmitSuccess(true);
+        setErrorMessage("");
+      })
+      .catch((err) => {
+        setIsSubmitting(false);
+        setErrorMessage(err);
+      });
   };
 
   // Reset form when submission is successful
-  // useEffect(() => {
-  //   if (submitSuccess) {
-  //     reset(defaultValues);
-  //   }
-  // }, [submitSuccess, reset]);
+  useEffect(() => {
+    if (submitSuccess) {
+      reset(defaultValues);
+    }
+  }, [submitSuccess, reset]);
 
   if (submitSuccess) {
     return (
@@ -458,7 +403,7 @@ export function ExpressionOfInterestForm(): ReactElement {
               </div>
 
               <Separator className="bg-gray-200 dark:bg-gray-700" />
-              {/* {errorMessage && (
+              {errorMessage && (
                 <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-700 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-300" />
@@ -467,7 +412,7 @@ export function ExpressionOfInterestForm(): ReactElement {
                     </p>
                   </div>
                 </div>
-              )} */}
+              )}
 
               {/* Submit Button */}
               <div className="flex justify-center pt-2">
