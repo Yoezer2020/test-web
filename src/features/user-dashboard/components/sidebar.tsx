@@ -21,7 +21,7 @@ const sidebarItems = [
     id: "settings",
     label: "Account Setting",
     icon: Settings,
-    href: "/user-dashboard/user-settings",
+    href: "/private/user-dashboard/user-settings",
   },
 ];
 
@@ -42,7 +42,7 @@ export function UserDashboardSidebar({
     <div className="w-64 bg-white border-r border-gray-200 shadow-sm">
       <div className="p-6">
         <div className="mb-8 flex items-center justify-center">
-          <Link href="/user-dashboard">
+          <Link href="/private/user-dashboard">
             <SimpleImage
               src="/images/logo-dark.svg"
               alt="Description"

@@ -42,13 +42,13 @@ function LoginForm() {
           description: "Welcome back, Admin!",
         });
         console.log("Admin login successful");
-        router.push("/user-dashboard");
+        router.push("/private/user-dashboard");
       } else if (email === "user@example.com" && password === "password123") {
         toast.success("Login successful!", {
           description: "Welcome back!",
         });
         console.log("User login successful");
-        router.push("/user-dashboard");
+        router.push("/private/user-dashboard");
       } else {
         throw new Error("Invalid credentials");
       }

@@ -200,8 +200,8 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
                   <Link
                     href={
                       company.type === "Company"
-                        ? `/company-dashboard`
-                        : `/branch-dashboard`
+                        ? `/private/company-dashboard`
+                        : `/private/branch-dashboard`
                     }
                     className="flex-1"
                   >
@@ -212,7 +212,7 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
                   </Link>
                 ) : company.registrationStatus === "payment" ? (
                   <Link
-                    href={`/user-dashboard/registration-payment-page`}
+                    href={`/private/user-dashboard/registration-payment-page`}
                     className="flex-1"
                   >
                     <Button className="w-full bg-black hover:bg-gray-800 text-white font-semibold shadow-md transition-all duration-200">
@@ -224,8 +224,8 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
                   <Link
                     href={
                       company.type === "Company"
-                        ? `/register-company`
-                        : `/register-company-branch`
+                        ? `/private/register-company`
+                        : `/private/register-company-branch`
                     }
                     className="flex-1"
                   >

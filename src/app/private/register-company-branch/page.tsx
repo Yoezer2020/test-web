@@ -549,13 +549,13 @@ export default function BranchRegistrationPage() {
                       branch in GMC.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-2">
                     <RadioGroup
                       value={formData.companyType}
                       onValueChange={(value) =>
                         updateFormData("companyType", value)
                       }
-                      className="space-y-4"
+                      className="space-y-2"
                     >
                       <div className="flex items-center space-x-3 p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors">
                         <RadioGroupItem
@@ -595,7 +595,7 @@ export default function BranchRegistrationPage() {
                       incorporated in GMC?
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <Label
                       htmlFor="foreignCompanyName"
                       className="text-sm font-medium text-gray-700"
@@ -626,7 +626,7 @@ export default function BranchRegistrationPage() {
                       2 names.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6 space-y-6">
+                  <CardContent className="p-3 space-y-6">
                     <Alert className="border-blue-200 bg-blue-50">
                       <Info className="h-4 w-4" />
                       <AlertDescription>
@@ -752,7 +752,7 @@ export default function BranchRegistrationPage() {
                       the Branch. You may put up to 2 activities.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <Textarea
                       placeholder="Describe the main business activities that the branch will conduct in GMC..."
                       value={formData.principalActivities}
@@ -772,7 +772,7 @@ export default function BranchRegistrationPage() {
                         Country of Incorporation
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-6">
+                    <CardContent className="p-3">
                       <Label
                         htmlFor="countryOfIncorporation"
                         className="text-sm font-medium text-gray-700"
@@ -801,7 +801,7 @@ export default function BranchRegistrationPage() {
                         Date of Incorporation
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-6">
+                    <CardContent className="p-3">
                       <Label
                         htmlFor="dateOfIncorporation"
                         className="text-sm font-medium text-gray-700"
@@ -834,7 +834,7 @@ export default function BranchRegistrationPage() {
                       unincorporated society or association)
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <Input
                       placeholder="e.g., Private Limited Company, Corporation, LLC, etc."
                       value={formData.legalForm}
@@ -880,7 +880,7 @@ export default function BranchRegistrationPage() {
                       Does the foreign company have a share capital?
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <RadioGroup
                       value={formData.hasShareCapital}
                       onValueChange={(value) =>
@@ -921,7 +921,7 @@ export default function BranchRegistrationPage() {
                       place of incorporation.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <Textarea
                       placeholder="Enter the complete registered office address including street, city, state/province, postal code, and country..."
                       value={formData.registeredOfficeAddress}
@@ -944,7 +944,7 @@ export default function BranchRegistrationPage() {
                         Certificate Number
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-6">
+                    <CardContent className="p-3">
                       <Label
                         htmlFor="certificateNumber"
                         className="text-sm font-medium text-gray-700"
@@ -970,7 +970,7 @@ export default function BranchRegistrationPage() {
                         Certifying Authority
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-6">
+                    <CardContent className="p-3">
                       <Label
                         htmlFor="certifyingAuthority"
                         className="text-sm font-medium text-gray-700"
@@ -997,7 +997,7 @@ export default function BranchRegistrationPage() {
                       Certification Date
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <Label
                       htmlFor="certificationDate"
                       className="text-sm font-medium text-gray-700"
@@ -1029,7 +1029,7 @@ export default function BranchRegistrationPage() {
                       of name change (if applicable)
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <FileUpload
                       id="incorporationDocuments"
                       label="Upload Incorporation Documents"
@@ -1069,7 +1069,7 @@ export default function BranchRegistrationPage() {
                       State the type of constitutive document of the FC /GC
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <Select
                       value={formData.constitutiveDocumentType}
                       onValueChange={(value) =>
@@ -1101,7 +1101,7 @@ export default function BranchRegistrationPage() {
                         Charter Certifying Authority
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-6">
+                    <CardContent className="p-3">
                       <Label
                         htmlFor="charterCertifyingAuthority"
                         className="text-sm font-medium text-gray-700"
@@ -1131,7 +1131,7 @@ export default function BranchRegistrationPage() {
                         Charter Certification Date
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-6">
+                    <CardContent className="p-3">
                       <Label
                         htmlFor="charterCertificationDate"
                         className="text-sm font-medium text-gray-700"
@@ -1168,7 +1168,7 @@ export default function BranchRegistrationPage() {
                       prepared in place of incorporation.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <FileUpload
                       id="constitutiveDocuments"
                       label="Upload Constitutive Documents"
@@ -1196,7 +1196,7 @@ export default function BranchRegistrationPage() {
                       FC/GC&apos;s beneficial owners
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <FileUpload
                       id="directorsBeneficiaryDocs"
                       label="Upload Directors and Beneficial Owners Documents"
@@ -1233,7 +1233,7 @@ export default function BranchRegistrationPage() {
                     DD/MM format)
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-6">
+                <CardContent className="p-3">
                   <Label
                     htmlFor="financialYearEnd"
                     className="text-sm font-medium text-gray-700"
@@ -1311,7 +1311,7 @@ export default function BranchRegistrationPage() {
                       consented to act as such.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <FileUpload
                       id="consentStatement"
                       label="Upload Consent Statement"
@@ -1339,7 +1339,7 @@ export default function BranchRegistrationPage() {
                       card of persons mentioned in the consent statement.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <FileUpload
                       id="representativePassports"
                       label="Upload Representative Passports/ID Cards"
@@ -2059,7 +2059,7 @@ export default function BranchRegistrationPage() {
                       GMC and working hours available?
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3">
                     <RadioGroup
                       value={formData.hasRegisteredOffice}
                       onValueChange={(value) =>
@@ -2100,7 +2100,7 @@ export default function BranchRegistrationPage() {
                         Where this information is available
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="p-6 space-y-6">
+                    <CardContent className="p-3 space-y-6">
                       <div>
                         <Label
                           htmlFor="registeredOfficeAddressGMC"

@@ -33,7 +33,7 @@ export default function CompanyDashboardLayout({
   };
 
   const handleLogout = () => {
-    router.push("/user-dashboard");
+    router.push("/private/user-dashboard");
   };
 
   return (

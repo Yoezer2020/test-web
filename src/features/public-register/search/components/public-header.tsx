@@ -4,23 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Moon, Sun, Menu } from "lucide-react";
 import { useThemeConfig } from "@/components/active-theme";
-import Image from "next/image";
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
 
 // Logo Component
 function LogoComponent() {
-  const { isDarkMode } = useThemeConfig();
-  const [logoError, setLogoError] = useState({ light: false, dark: false });
+  // const { isDarkMode } = useThemeConfig();
+  // const [logoError, setLogoError] = useState({ light: false, dark: false });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleLogoError = (mode: "light" | "dark") => {
-    setLogoError((prev) => ({ ...prev, [mode]: true }));
-  };
+  // const handleLogoError = (mode: "light" | "dark") => {
+  //   setLogoError((prev) => ({ ...prev, [mode]: true }));
+  // };
 
   if (!mounted) {
     return (
@@ -33,22 +32,21 @@ function LogoComponent() {
     );
   }
 
-  if (logoError.light && logoError.dark) {
-    return (
-      <div className="flex items-center space-x-2">
-        <div className="text-2xl">🏢</div>
-        <span className="text-lg font-bold text-gray-900 dark:text-white">
-          GCRO
-        </span>
-      </div>
-    );
-  }
+  // if (logoError.light && logoError.dark) {
+  //   return (
+  //     <div className="flex items-center space-x-2">
+  //       <div className="text-2xl">🏢</div>
+  //       <span className="text-lg font-bold text-gray-900 dark:text-white">
+  //         GCRO
+  //       </span>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex items-center space-x-2">
       <div className="relative w-8 h-8">
-        {/* Light Mode Logo */}
-        {!logoError.light && (
+        {/* {!logoError.light && (
           <Image
             src="/images/logo-dark.svg"
             alt="GCRO Logo"
@@ -61,7 +59,7 @@ function LogoComponent() {
             priority
           />
         )}
-        {/* Dark Mode Logo */}
+
         {!logoError.dark && (
           <Image
             src="/images/logo-light.svg"
@@ -74,7 +72,7 @@ function LogoComponent() {
             onError={() => handleLogoError("dark")}
             priority
           />
-        )}
+        )} */}
       </div>
       <span className="text-lg font-bold text-gray-900 dark:text-white">
         Gelephu Corporate Registration Office

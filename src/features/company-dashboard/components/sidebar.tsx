@@ -28,25 +28,25 @@ const menuItems = [
     id: "dashboard",
     label: "Dashboard",
     icon: LayoutDashboard,
-    href: "/company-dashboard",
+    href: "/private/company-dashboard",
   },
   {
     id: "documents",
     label: "Document Center",
     icon: FolderOpen,
-    href: "/company-dashboard/company-documents",
+    href: "/private/company-dashboard/company-documents",
   },
   {
     id: "profile",
     label: "Company Profile",
     icon: Building2,
-    href: "/company-dashboard/company-profile",
+    href: "/private/company-dashboard/company-profile",
   },
   {
     id: "compliance",
     label: "Annual Filing",
     icon: FileCheck,
-    href: "/company-dashboard/annual-filing",
+    href: "/private/company-dashboard/annual-filing",
   },
 ];
 
