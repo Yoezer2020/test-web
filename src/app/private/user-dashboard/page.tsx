@@ -5,6 +5,8 @@ import { CompanyGrid } from "@/features/user-dashboard/components/company-grid";
 import { SearchFilter } from "@/features/user-dashboard/components/search-filter";
 import { CompanyDashboardAlert } from "@/features/company-dashboard/components/dashboard-alert";
 import { PasswordUpdateModal } from "@/features/user-dashboard/components/password-update-modal";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface Company {
   id: string;
@@ -149,6 +151,11 @@ export default function UserDashboard() {
 
       {/* Page Content */}
       <div className="p-6 space-y-8">
+        <Button>
+          <Link href={`/private/user-dashboard/expression-of-interest`}>
+            Submit another EOI
+          </Link>
+        </Button>
         <SearchFilter
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}

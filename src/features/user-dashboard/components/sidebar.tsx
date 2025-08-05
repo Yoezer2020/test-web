@@ -16,7 +16,12 @@ interface SidebarProps {
 }
 
 const sidebarItems = [
-  { id: "dashboard", label: "Dashboard", icon: Home, href: "/user-dashboard" },
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: Home,
+    href: "/private/user-dashboard",
+  },
   {
     id: "settings",
     label: "Account Setting",
