@@ -12,6 +12,7 @@ import {
   X,
   LayoutDashboard,
   FileCheck,
+  NotebookText,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -51,7 +52,7 @@ const menuItems = [
   {
     id: "cspRegistry",
     label: "CSP Registry",
-    icon: FileCheck,
+    icon: NotebookText,
     href: "/private/company-dashboard/csp-registry",
   },
 ];
