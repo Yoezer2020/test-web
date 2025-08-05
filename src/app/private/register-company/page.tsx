@@ -788,7 +788,7 @@ export default function CompanyRegistrationPage() {
         <div className="w-80 bg-white shadow-lg border-r border-gray-200 fixed h-full overflow-y-auto hidden sm:block">
           <div className="p-6 border-b border-gray-200">
             <Link
-              href="/user-dashboard"
+              href="/private/user-dashboard"
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
             >
               <ArrowLeft className="h-4 w-4" />
