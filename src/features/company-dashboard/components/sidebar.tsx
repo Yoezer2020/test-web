@@ -48,6 +48,12 @@ const menuItems = [
     icon: FileCheck,
     href: "/private/company-dashboard/annual-filing",
   },
+  {
+    id: "cspRegistry",
+    label: "CSP Registry",
+    icon: FileCheck,
+    href: "/private/company-dashboard/csp-registry",
+  },
 ];
 
 export function CompanyDashboardSidebar({
