@@ -246,8 +246,7 @@ export default function AccountSettings() {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      {/* Header */}
+    <div className="p-6 space-y-6 bg-gray-50">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Account Settings</h1>

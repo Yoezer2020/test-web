@@ -1,19 +1,18 @@
 "use client";
-
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link"; // Import Link component
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  FolderOpen,
-  Building2,
-  LogOut,
-  Menu,
-  X,
-  LayoutDashboard,
-  FileCheck,
-  NotebookText,
-} from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { SimpleImage } from "@/components/inputs/simple-image/simple-image";
+
+// Define the type for a menu item
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: React.ElementType; // Use React.ElementType for icon components
+  href: string;
+}
 
 interface SidebarProps {
   activeItem?: string;
@@ -22,67 +21,22 @@ interface SidebarProps {
     email: string;
     avatar?: string;
   };
+  menuItems: MenuItem[]; // Accept menuItems as a prop
 }
-
-const menuItems = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-    href: "/private/company-dashboard",
-  },
-  {
-    id: "documents",
-    label: "Document Center",
-    icon: FolderOpen,
-    href: "/private/company-dashboard/company-documents",
-  },
-  {
-    id: "profile",
-    label: "Company Profile",
-    icon: Building2,
-    href: "/private/company-dashboard/company-profile",
-  },
-  {
-    id: "compliance",
-    label: "Annual Filing",
-    icon: FileCheck,
-    href: "/private/company-dashboard/annual-filing",
-  },
-  {
-    id: "cspRegistry",
-    label: "CSP Registry",
-    icon: NotebookText,
-    href: "/private/company-dashboard/csp-registry",
-  },
-];
 
 export function CompanyDashboardSidebar({
   activeItem = "dashboard",
   userInfo,
+  menuItems, // Destructure menuItems from props
 }: SidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const router = useRouter();
-
   const defaultUser = {
     name: "John Doe",
     email: "john.doe@company.com",
     avatar: "",
   };
-
   const user = userInfo || defaultUser;
-
   const toggleMobile = () => setIsMobileOpen(!isMobileOpen);
-
-  const handleLogout = () => {
-    console.log("Logging out...");
-    // Add logout logic here
-  };
-
-  const handleNavigation = (href: string) => {
-    router.push(href);
-    setIsMobileOpen(false);
-  };
 
   return (
     <>
@@ -99,7 +53,6 @@ export function CompanyDashboardSidebar({
           <Menu className="h-5 w-5" />
         )}
       </Button>
-
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
@@ -107,77 +60,87 @@ export function CompanyDashboardSidebar({
           onClick={toggleMobile}
         />
       )}
-
       {/* Sidebar */}
       <div
-        className={`fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 shadow-sm z-50 transform transition-transform duration-300 ease-in-out ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full p-6">
+          {" "}
+          {/* Added p-6 here */}
+          {/* Logo Section */}
+          <div className="mb-8 flex items-center justify-center">
+            <Link href="/private/user-dashboard">
+              {" "}
+              {/* Changed to user-dashboard as company-dashboard needs companyId */}
+              <SimpleImage
+                src="/images/logo-dark.svg"
+                alt="Description"
+                width={70}
+                height={70}
+                fallback={
+                  <div className="w-10 h-10 bg-gray-200 rounded-full" />
+                }
+              />
+            </Link>
+          </div>
           {/* User Profile Section */}
-          <div className="p-6 border-b border-gray-200 bg-gray-50">
-            <div className="flex items-center space-x-3">
-              <Avatar className="h-12 w-12 border-2 border-gray-300">
-                <AvatarImage
-                  src={user.avatar || "/placeholder.svg"}
-                  alt={user.name}
-                />
-                <AvatarFallback className="bg-black text-white font-bold text-sm">
-                  {user.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-gray-900 truncate">
-                  {user.name}
-                </p>
-                <p className="text-xs text-gray-600 truncate">{user.email}</p>
-              </div>
+          <div className="flex items-center space-x-3 mb-8 p-3 bg-gray-50 rounded-lg">
+            <Avatar className="h-10 w-10 bg-black">
+              <AvatarImage
+                src={user.avatar || "/placeholder.svg"}
+                alt={user.name}
+              />
+              <AvatarFallback className="bg-black text-white font-bold text-sm">
+                {user.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-gray-900 truncate">
+                {user.name}
+              </p>
+              <p className="text-xs text-gray-600 truncate">{user.email}</p>
             </div>
           </div>
-
           {/* Navigation Menu */}
-          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+          <nav className="flex-1 space-y-2 overflow-y-auto">
+            {" "}
+            {/* Removed px-4 py-6 */}
             {menuItems.map((item) => {
+              // Use menuItems from props
               const Icon = item.icon;
               const isActive = activeItem === item.id;
-
               return (
-                <button
+                <Link
+                  href={item.href}
                   key={item.id}
-                  className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    isActive
-                      ? "bg-black text-white shadow-md"
-                      : "text-gray-700 hover:bg-gray-100 hover:text-black"
-                  }`}
-                  onClick={() => handleNavigation(item.href)}
+                  onClick={() => setIsMobileOpen(false)}
                 >
-                  <Icon
-                    className={`mr-3 h-5 w-5 ${
-                      isActive ? "text-white" : "text-gray-500"
+                  {" "}
+                  {/* Added onClick to close mobile sidebar */}
+                  <button
+                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      isActive
+                        ? "text-black bg-gray-100 border-l-4 border-black"
+                        : "text-gray-700 hover:bg-gray-100"
                     }`}
-                  />
-                  {item.label}
-                </button>
+                  >
+                    <Icon
+                      className={`mr-3 h-4 w-4 ${
+                        isActive ? "text-black" : "text-gray-500"
+                      }`}
+                    />
+                    {item.label}
+                  </button>
+                </Link>
               );
             })}
           </nav>
-
-          {/* Logout Button */}
-          <div className="p-4 border-t border-gray-200">
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-700 hover:text-black hover:bg-gray-100 font-medium"
-              onClick={handleLogout}
-            >
-              <LogOut className="mr-3 h-5 w-5" />
-              Logout
-            </Button>
-          </div>
         </div>
       </div>
     </>

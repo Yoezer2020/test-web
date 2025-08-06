@@ -127,7 +127,7 @@ export default function CSPDirectoryPage() {
   });
 
   return (
-    <div className="p-6 space-y-8 bg-white text-gray-900">
+    <div className="p-6 space-y-8 text-gray-900">
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold">
           Find Your Corporate Service Provider
