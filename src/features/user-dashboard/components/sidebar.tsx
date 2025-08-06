@@ -83,7 +83,7 @@ export function UserDashboardSidebar({
               <Link href={item.href} key={item.id}>
                 <button
                   onClick={() => onItemClick?.(item.id)}
-                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  className={`w-full flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors ${
                     isActive
                       ? "text-black bg-gray-100 border-l-4 border-black"
                       : "text-gray-700 hover:bg-gray-100"
