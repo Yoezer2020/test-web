@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function DashboardLayout({ children }: any) {
   const [activeItem, setActiveItem] = useState("dashboard");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar toggle
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const userInfo = {
     name: "User",
@@ -15,7 +15,6 @@ export default function DashboardLayout({ children }: any) {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"

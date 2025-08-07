@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/form";
 import { useAppDispatch } from "@/redux/store";
 import { submitExpressionOfInterest } from "@/redux/slice/expression-of-interest/expressionInterestSlice";
+import { checkUserEmail } from "@/redux/slice/users/usersSlice";
 
 const defaultValues: FormData = {
   email: "",
@@ -94,6 +95,7 @@ export function ExpressionOfInterestForm(): ReactElement {
     null
   );
   const [errorMessage, setErrorMessage] = useState("");
+  const [emailExistMessage, setEmailExistMessage] = useState("");
 
   const methods = useForm<FormData>({
     resolver: zodResolver(baseSchema),
@@ -102,11 +104,14 @@ export function ExpressionOfInterestForm(): ReactElement {
   });
 
   const {
+    watch,
     control,
     reset,
     handleSubmit,
     formState: { errors, isValid },
   } = methods;
+
+  const checkEmail = watch("email");
 
   // Handle form submission
   const onSubmit = async (data: any) => {
@@ -148,6 +153,30 @@ export function ExpressionOfInterestForm(): ReactElement {
       reset(defaultValues);
     }
   }, [submitSuccess, reset]);
+
+  const checkEmailMethod = async (checkEmail: any) => {
+    // if (!checkEmail) return;
+    dispatch(checkUserEmail({ email: checkEmail }))
+      .unwrap()
+      .then(() => {
+        setEmailExistMessage("The email is available");
+        setIsSubmitting(false);
+      })
+      .catch((error: any) => {
+        const errorMsg =
+          error?.message ||
+          error?.data?.message ||
+          "This email is already registered.";
+        setEmailExistMessage(errorMsg);
+        setIsSubmitting(false);
+      });
+  };
+
+  // useEffect(() => {
+  //   if (checkEmail && !errors.email) {
+  //     checkEmailMethod(checkEmail);
+  //   }
+  // }, [checkEmail]);
 
   if (submitSuccess) {
     return (
@@ -223,6 +252,7 @@ export function ExpressionOfInterestForm(): ReactElement {
               )}
 
               {/* Basic Information Section */}
+
               <div className="space-y-6">
                 <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
                   <Mail className="h-5 w-5 text-gray-700 dark:text-gray-300" />
@@ -235,22 +265,61 @@ export function ExpressionOfInterestForm(): ReactElement {
                     control={control}
                     name="email"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="space-y-2">
                         <FormLabel className="text-gray-900 dark:text-gray-100 font-medium">
                           Email Address *
                         </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="your.email@example.com"
-                            className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`}
-                            {...field}
-                          />
-                        </FormControl>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="your.email@example.com"
+                              className={`bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-offset-2 ${
+                                emailExistMessage
+                                  ? emailExistMessage.includes("available")
+                                    ? "border-green-500 ring-green-200 dark:ring-green-900"
+                                    : "border-red-500 ring-red-200 dark:ring-red-900"
+                                  : ""
+                              }`}
+                              {...field}
+                            />
+                          </FormControl>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => {
+                              if (field.value) checkEmailMethod(field.value);
+                            }}
+                            disabled={isSubmitting || !field.value}
+                            className="shrink-0 sm:w-auto border-blue-500 text-blue-600 hover:bg-blue-50 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-900/20 hover:border-blue-600 dark:hover:border-blue-500 disabled:border-gray-300 disabled:text-gray-500 whitespace-nowrap font-medium"
+                          >
+                            {isSubmitting
+                              ? "Checking..."
+                              : "Check Availability"}
+                          </Button>
+                        </div>
                         <FormMessage />
+                        {emailExistMessage && (
+                          <div
+                            className={`text-sm p-2 rounded-md mt-1 flex items-center gap-2 ${
+                              emailExistMessage.includes("available")
+                                ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-300"
+                                : "bg-yellow-50 text-yellow-700 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300"
+                            }`}
+                          >
+                            {emailExistMessage.includes("available") ? (
+                              <CheckCircle2 className="h-4 w-4" />
+                            ) : (
+                              <AlertCircle className="h-4 w-4" />
+                            )}
+                            {String(emailExistMessage)}
+                          </div>
+                        )}
                       </FormItem>
                     )}
                   />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
                     control={control}
                     name="entityType"

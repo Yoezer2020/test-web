@@ -1,16 +1,15 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link"; // Import Link component
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, X } from "lucide-react";
 import { SimpleImage } from "@/components/inputs/simple-image/simple-image";
 
-// Define the type for a menu item
 interface MenuItem {
   id: string;
   label: string;
-  icon: React.ElementType; // Use React.ElementType for icon components
+  icon: React.ElementType;
   href: string;
 }
 
@@ -21,13 +20,13 @@ interface SidebarProps {
     email: string;
     avatar?: string;
   };
-  menuItems: MenuItem[]; // Accept menuItems as a prop
+  menuItems: MenuItem[];
 }
 
 export function CompanyDashboardSidebar({
   activeItem = "dashboard",
   userInfo,
-  menuItems, // Destructure menuItems from props
+  menuItems,
 }: SidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const defaultUser = {
@@ -40,7 +39,6 @@ export function CompanyDashboardSidebar({
 
   return (
     <>
-      {/* Mobile Menu Button */}
       <Button
         variant="ghost"
         size="sm"
@@ -53,14 +51,12 @@ export function CompanyDashboardSidebar({
           <Menu className="h-5 w-5" />
         )}
       </Button>
-      {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
           onClick={toggleMobile}
         />
       )}
-      {/* Sidebar */}
       <div
         className={`fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 shadow-sm z-50 transform transition-transform duration-300 ease-in-out ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
@@ -68,12 +64,9 @@ export function CompanyDashboardSidebar({
       >
         <div className="flex flex-col h-full p-6">
           {" "}
-          {/* Added p-6 here */}
-          {/* Logo Section */}
           <div className="mb-8 flex items-center justify-center">
             <Link href="/private/user-dashboard">
               {" "}
-              {/* Changed to user-dashboard as company-dashboard needs companyId */}
               <SimpleImage
                 src="/images/logo-dark.svg"
                 alt="Description"
@@ -85,7 +78,6 @@ export function CompanyDashboardSidebar({
               />
             </Link>
           </div>
-          {/* User Profile Section */}
           <div className="flex items-center space-x-3 mb-8 p-3 bg-gray-50 rounded-lg">
             <Avatar className="h-10 w-10 bg-black">
               <AvatarImage
@@ -107,12 +99,9 @@ export function CompanyDashboardSidebar({
               <p className="text-xs text-gray-600 truncate">{user.email}</p>
             </div>
           </div>
-          {/* Navigation Menu */}
           <nav className="flex-1 space-y-2 overflow-y-auto">
             {" "}
-            {/* Removed px-4 py-6 */}
             {menuItems.map((item) => {
-              // Use menuItems from props
               const Icon = item.icon;
               const isActive = activeItem === item.id;
               return (
@@ -122,7 +111,6 @@ export function CompanyDashboardSidebar({
                   onClick={() => setIsMobileOpen(false)}
                 >
                   {" "}
-                  {/* Added onClick to close mobile sidebar */}
                   <button
                     className={`w-full flex space-y-12 items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors ${
                       isActive
