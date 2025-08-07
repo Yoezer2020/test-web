@@ -104,14 +104,11 @@ export function ExpressionOfInterestForm(): ReactElement {
   });
 
   const {
-    watch,
     control,
     reset,
     handleSubmit,
     formState: { errors, isValid },
   } = methods;
-
-  const checkEmail = watch("email");
 
   // Handle form submission
   const onSubmit = async (data: any) => {
@@ -155,7 +152,6 @@ export function ExpressionOfInterestForm(): ReactElement {
   }, [submitSuccess, reset]);
 
   const checkEmailMethod = async (checkEmail: any) => {
-    // if (!checkEmail) return;
     dispatch(checkUserEmail({ email: checkEmail }))
       .unwrap()
       .then(() => {

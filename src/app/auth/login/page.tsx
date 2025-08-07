@@ -12,51 +12,81 @@ import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { SimpleImage } from "@/components/inputs/simple-image/simple-image";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-// Replace this with your background image URL
+// Define the Zod schema for login form validation
+const loginSchema = z.object({
+  email: z.string().email({ message: "Invalid email address." }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters." }),
+});
+
+type LoginFormInputs = z.infer<typeof loginSchema>;
 
 function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState(""); // Renamed to avoid conflict with formState.errors
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInputs>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
   // Check for URL error parameters
   const urlError = searchParams.get("error");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: LoginFormInputs) => {
     setIsLoading(true);
-    setError("");
+    setServerError(""); // Clear server error before new submission
 
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // Demo validation
-      if (email === "admin@example.com" && password === "password123") {
+      if (
+        data.email === "admin@example.com" &&
+        data.password === "password123"
+      ) {
         toast.success("Login successful!", {
           description: "Welcome back, Admin!",
         });
         console.log("Admin login successful");
         router.push("/private/user-dashboard");
-      } else if (email === "user@example.com" && password === "password123") {
+      } else if (
+        data.email === "user@example.com" &&
+        data.password === "password123"
+      ) {
         toast.success("Login successful!", {
           description: "Welcome back!",
         });
         console.log("User login successful");
         router.push("/private/user-dashboard");
       } else {
-        throw new Error("Invalid credentials");
+        // Set a general server error if credentials don't match demo
+        setServerError("Invalid email or password. Please try again.");
+        toast.error("Login failed", {
+          description: "Invalid email or password",
+        });
       }
     } catch (error) {
       console.error("Login error:", error);
-      setError("Invalid email or password. Please try again.");
+      setServerError("An unexpected error occurred. Please try again.");
       toast.error("Login failed", {
-        description: "Invalid email or password",
+        description: "An unexpected error occurred",
       });
     } finally {
       setIsLoading(false);
@@ -79,7 +109,6 @@ function LoginForm() {
     >
       {/* Background overlay */}
       <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
-
       {/* Login Card */}
       <Card className="w-full max-w-sm bg-black/90 border-gray-700 relative z-10 shadow-2xl">
         <CardContent className="p-8">
@@ -93,24 +122,21 @@ function LoginForm() {
               fallback={<div className="w-10 h-10 bg-gray-200 rounded-full" />}
             />
           </div>
-
           {/* Title */}
           <h1 className="text-2xl font-semibold text-white text-center mb-8">
             Login
           </h1>
-
           {/* Error Alert */}
-          {(urlError || error) && (
+          {(urlError || serverError) && (
             <Alert className="border-red-500/50 bg-red-500/10 mb-6">
               <AlertCircle className="h-4 w-4 text-red-400" />
               <AlertDescription className="text-red-300">
-                {error || "Authentication failed. Please try again."}
+                {serverError || "Authentication failed. Please try again."}
               </AlertDescription>
             </Alert>
           )}
-
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Email Field */}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-white text-sm font-medium">
@@ -120,14 +146,16 @@ function LoginForm() {
                 id="email"
                 type="email"
                 placeholder="username@gmail.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                {...register("email")}
                 disabled={isLoading}
                 className="bg-white border-gray-300 text-black placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
               />
+              {errors.email && (
+                <p className="text-red-400 text-xs mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
-
             {/* Password Field */}
             <div className="space-y-2">
               <Label
@@ -141,9 +169,7 @@ function LoginForm() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  {...register("password")}
                   disabled={isLoading}
                   className="bg-white border-gray-300 text-black placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500 pr-10"
                 />
@@ -160,8 +186,12 @@ function LoginForm() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-red-400 text-xs mt-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
-
             {/* Forgot Password Link */}
             <div className="text-right">
               <Link
@@ -171,7 +201,6 @@ function LoginForm() {
                 Forgot Password?
               </Link>
             </div>
-
             {/* Sign In Button */}
             <Button
               type="submit"
@@ -188,7 +217,6 @@ function LoginForm() {
               )}
             </Button>
           </form>
-
           {/* Demo Credentials */}
           <div className="mt-6 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
             <h3 className="font-medium text-sm mb-2 text-white">
